@@ -5,16 +5,14 @@ var RESIZE = 2;
 var Window = React.createClass({
 
   componentWillMount: function () {
+    this.window = this.props.window;
     $(document.body).on('mousemove', this.handleMouseMove);
     $(document.body).on('mouseup', this.handleMouseUp);
   },
 
   getDefaultProps: function () {
     return {
-      x: 0,
-      y: 0,
-      width: 100,
-      height: 100,
+      window: {},
       onStartMove: function () {},
       onEndMove: function () {}
     };
@@ -26,14 +24,6 @@ var Window = React.createClass({
       offset: {
         x: 0,
         y: 0
-      },
-      pos: {
-        x: this.props.x,
-        y: this.props.y
-      },
-      size: {
-        width: this.props.width,
-        height: this.props.height
       }
     };
   },
@@ -51,33 +41,27 @@ var Window = React.createClass({
         break;
       case RESIZE:
         offset = {
-          x: e.clientX - this.state.size.width,
-          y: e.clientY - this.state.size.height
+          x: e.clientX - this.window.width,
+          y: e.clientY - this.window.height
         };
         break;
     }
 
     this.setState({ mode: mode, offset: offset });
-    this.props.onStartMove(this.props.key);
+    this.props.onStartMove(this.window);
   },
 
   handleMouseMove: function (e) {
     switch (this.state.mode) {
       case MOVE:
-        this.setState({
-          pos: {
-            x: e.clientX - this.state.offset.x,
-            y: e.clientY - this.state.offset.y
-          }
-        });
+        this.window.x = e.clientX - this.state.offset.x;
+        this.window.y = e.clientY - this.state.offset.y;
+        this.forceUpdate();
         break;
       case RESIZE:
-        this.setState({
-          size: {
-            width: e.clientX - this.state.offset.x,
-            height: e.clientY - this.state.offset.y
-          }
-        });
+        this.window.width = e.clientX - this.state.offset.x;
+        this.window.height = e.clientY - this.state.offset.y;
+        this.forceUpdate();
         break;
     }
   },
@@ -85,7 +69,7 @@ var Window = React.createClass({
   handleMouseUp: function () {
     if (this.state.mode === INACTIVE) return;
     this.setState({ mode: INACTIVE });
-    this.props.onEndMove(this);
+    this.props.onEndMove(this.window);
   },
 
   render: function () {
@@ -95,15 +79,17 @@ var Window = React.createClass({
     });
 
     var styles = {
-      top: this.state.pos.y,
-      left: this.state.pos.x,
-      width: this.state.size.width,
-      height: this.state.size.height
+      top: this.window.y,
+      left: this.window.x,
+      width: this.window.width,
+      height: this.window.height
     };
 
     return (
-      <div onMouseDown={this.handleMouseDown} className={classes} style={styles}>
-        This is a window
+      <div
+        className={classes} style={styles}
+        onMouseDown={this.handleMouseDown}>
+        { this.window.title }
       </div>
     );
   }

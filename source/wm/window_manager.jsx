@@ -2,8 +2,8 @@ var Window = require('./window');
 
 var WindowManager = React.createClass({
 
-  componentWillMount: function () {
-    $(document.body).on('contextmenu', this.handleContextMenu);
+  componentDidMount: function () {
+    $(this.getDOMNode()).on('contextmenu', this.handleContextMenu);
   },
 
   getInitialProps: function () {
@@ -14,16 +14,16 @@ var WindowManager = React.createClass({
 
   getInitialState: function () {
     return {
-      order: this.props.windows.map(function (window) { return window.id; }),
       active: false
     };
   },
 
-  handleStartMove: function (id) {
-    var index = this.state.order.indexOf(id);
-    this.state.order.splice(index, 1);
-    this.state.order.push(id);
-    this.setState({ active: id });
+  handleStartMove: function (window) {
+    // Move selected window to front of screen
+    var index = this.props.windows.indexOf(window);
+    this.props.windows.splice(index, 1);
+    this.props.windows.push(window);
+    this.setState({ active: window });
   },
 
   handleEndMove: function (window) {
@@ -31,15 +31,7 @@ var WindowManager = React.createClass({
   },
 
   handleContextMenu: function (e) {
-    if (this.state.active !== false) {
-      e.preventDefault();
-    }
-  },
-
-  getWindows: function () {
-    return _.sortBy(this.props.windows, function (window) {
-      return this.state.order.indexOf(window.id);
-    }, this);
+    e.preventDefault();
   },
 
   render: function () {
@@ -47,11 +39,10 @@ var WindowManager = React.createClass({
       <div className="window-manager"
         onMouseMove={this.handleMouseMove}
         onMouseUp={this.handleMouseUp}>
-        { this.getWindows().map(function (window) {
+        { this.props.windows.map(function (window) {
           return <Window key={window.id}
-            x={window.x} y={window.y}
-            width={window.width} height={window.height}
-            active={this.state.active === window.id}
+            window={window}
+            active={this.state.active === window}
             onStartMove={this.handleStartMove}
             onEndMove={this.handleEndMove} />;
         }, this)}
