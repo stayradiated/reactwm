@@ -1,0 +1,27 @@
+{
+  "name": "react",
+  "version": "0.0.0",
+  "description": "Trying out react",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stayradiated/react"
+  },
+  "author": "George Czabania",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stayradiated/react/issues"
+  },
+  "homepage": "https://github.com/stayradiated/react",
+  "devDependencies": {
+    "gulp": "^3.6.2",
+    "reactify": "^0.13.1",
+    "gulp-concat": "^2.2.0",
+    "browserify": "^3.46.0",
+    "vinyl-source-stream": "^0.1.1",
+    "gulp-connect": "^2.0.5"
+  }
+}
