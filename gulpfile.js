@@ -7,8 +7,15 @@ var connect = require('gulp-connect');
 
 gulp.task('default', ['scripts', 'libs']);
 
+gulp.task('watch', ['default'], function () {
+  gulp.watch('source/**/*', ['scripts']);
+});
+
 gulp.task('scripts', function () {
-  return browserify('./source/app.js')
+    return browserify({
+      extensions: ['.js', '.json', '.jsx']
+    })
+    .add('./source/app.js')
     .transform(reactify)
     .bundle()
     .pipe(source('app.js'))
@@ -23,7 +30,7 @@ gulp.task('libs', function () {
     .pipe(connect.reload());
 });
 
-gulp.task('connect', function () {
+gulp.task('connect', ['watch'], function () {
   return connect.server({
     root: ['dist'],
     port: 8000,

@@ -23,5 +23,8 @@
     "browserify": "^3.46.0",
     "vinyl-source-stream": "^0.1.1",
     "gulp-connect": "^2.0.5"
+  },
+  "dependencies": {
+    "markdown": "^0.5.0"
   }
 }
