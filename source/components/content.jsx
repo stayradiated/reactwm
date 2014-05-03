@@ -2,7 +2,7 @@ var CommentBox = require('./comment_box');
 
 var content = function (data) {
   React.renderComponent(
-    <CommentBox data={ data } />,
+    <CommentBox url="comments" pollInterval={ 2000 } />,
     document.getElementById('content')
   );
 };

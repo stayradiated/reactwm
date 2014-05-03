@@ -1,7 +1,5 @@
 var markdown = require('markdown').markdown;
 
-console.log(markdown);
-
 var Comment = React.createClass({
   render: function () {
     var markup = markdown.toHTML(this.props.children.toString());
