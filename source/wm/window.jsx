@@ -60,13 +60,18 @@ var Window = React.createClass({
   },
 
   render: function () {
+    var classes = React.addons.classSet({
+      window: true,
+      active: this.props.active
+    });
+
     var styles = {
       top: this.state.pos.y,
       left: this.state.pos.x
     };
 
     return (
-      <div onMouseDown={this.handleMouseDown} className="window" style={styles}>
+      <div onMouseDown={this.handleMouseDown} className={classes} style={styles}>
         This is a window
       </div>
     );

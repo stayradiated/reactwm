@@ -10,7 +10,8 @@ var WindowManager = React.createClass({
 
   getInitialState: function () {
     return {
-      order: this.props.windows.map(function (window) { return window.id; })
+      order: this.props.windows.map(function (window) { return window.id; }),
+      active: null
     };
   },
 
@@ -18,7 +19,9 @@ var WindowManager = React.createClass({
     var index = this.state.order.indexOf(id);
     this.state.order.splice(index, 1);
     this.state.order.push(id);
-    this.forceUpdate();
+    this.setState({
+      active: id
+    });
   },
 
   handleEndMove: function (window) {
@@ -36,7 +39,8 @@ var WindowManager = React.createClass({
         onMouseMove={this.handleMouseMove}
         onMouseUp={this.handleMouseUp}>
         { this.getWindows().map(function (window) {
-          return <Window key={window.id} x={window.x} y={window.y }
+          return <Window key={window.id} x={window.x} y={window.y}
+            active={this.state.active === window.id}
             onStartMove={this.handleStartMove}
             onEndMove={this.handleEndMove} />;
         }, this)}
