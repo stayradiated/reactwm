@@ -5,6 +5,28 @@
   <title>Hello React</title>
   <script src="js/libs.js"></script>
   <script src="js/app.js"></script>
+  <style>
+    body {
+      margin: 0;
+      -webkit-user-select: none;
+      cursor: default;
+    }
+    .window-manager {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+      background: #eee;
+    }
+    .window {
+      position: absolute;
+      border: 5px solid #3498db;
+      padding: 10px;
+      background: #fff;
+      box-shadow: 0 3px 15px 0 #aaa;
+      box-sizing: border-box;
+    }
+  </style>
 </head>
 <body>
   <div id="content"></div>

@@ -1,12 +1,13 @@
-var content = require('./content');
-var list = require('./list');
 
 $(function () {
 
-  // show comment box
+  // var content = require('./content');
   // content();
-  
-  // show list
-  list();
+
+  // var list = require('./list');
+  // list();
+
+  var wm = require('./wm');
+  wm();
 
 });
