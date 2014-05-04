@@ -10,6 +10,7 @@
       margin: 0;
       -webkit-user-select: none;
       cursor: default;
+      font-family: consolas;
     }
     .window-manager {
       position: fixed;
@@ -21,13 +22,19 @@
     .window {
       position: absolute;
       border: 5px solid #3498db;
-      padding: 10px;
       background: #fff;
       box-shadow: 0 3px 15px 0 #000;
       box-sizing: border-box;
     }
     .window.active {
       border-color: #e74c3c;
+    }
+    .window.active .title {
+      background: #e74c3c;
+    }
+    .window .title {
+      background: #3498db;
+      color: #fff;
     }
   </style>
 </head>

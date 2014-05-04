@@ -8,13 +8,14 @@ var WindowManager = React.createClass({
 
   getInitialProps: function () {
     return {
-      windows: []
+      windows: [],
     };
   },
 
   getInitialState: function () {
     return {
-      active: false
+      active: false,
+      guides: this.getGuides()
     };
   },
 
@@ -27,11 +28,25 @@ var WindowManager = React.createClass({
   },
 
   handleEndMove: function (window) {
-    this.setState({ active: false });
+    this.setState({
+      active: false,
+      guides: this.getGuides()
+    });
   },
 
   handleContextMenu: function (e) {
     e.preventDefault();
+  },
+
+  getGuides: function () {
+    var guides = { vertical: [], horizontal: [] };
+    this.props.windows.forEach(function (window) {
+      guides.vertical.push(window.x);
+      guides.horizontal.push(window.y);
+      guides.vertical.push(window.x + window.width);
+      guides.horizontal.push(window.y + window.height);
+    });
+    return guides;
   },
 
   render: function () {
@@ -42,6 +57,7 @@ var WindowManager = React.createClass({
         { this.props.windows.map(function (window) {
           return <Window key={window.id}
             window={window}
+            guides={this.state.guides}
             active={this.state.active === window}
             onStartMove={this.handleStartMove}
             onEndMove={this.handleEndMove} />;
