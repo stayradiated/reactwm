@@ -3,9 +3,7 @@ var Window = require('./window');
 var WindowManager = React.createClass({
 
   componentWillMount: function () {
-    $(document.body).on('contextmenu', function (e) {
-      e.preventDefault();
-    });
+    $(document.body).on('contextmenu', this.handleContextMenu);
   },
 
   getInitialProps: function () {
@@ -17,7 +15,7 @@ var WindowManager = React.createClass({
   getInitialState: function () {
     return {
       order: this.props.windows.map(function (window) { return window.id; }),
-      mouse: null
+      active: false
     };
   },
 
@@ -25,12 +23,17 @@ var WindowManager = React.createClass({
     var index = this.state.order.indexOf(id);
     this.state.order.splice(index, 1);
     this.state.order.push(id);
-    this.setState({
-      active: id
-    });
+    this.setState({ active: id });
   },
 
   handleEndMove: function (window) {
+    this.setState({ active: false });
+  },
+
+  handleContextMenu: function (e) {
+    if (this.state.active !== false) {
+      e.preventDefault();
+    }
   },
 
   getWindows: function () {
@@ -45,7 +48,9 @@ var WindowManager = React.createClass({
         onMouseMove={this.handleMouseMove}
         onMouseUp={this.handleMouseUp}>
         { this.getWindows().map(function (window) {
-          return <Window key={window.id} x={window.x} y={window.y}
+          return <Window key={window.id}
+            x={window.x} y={window.y}
+            width={window.width} height={window.height}
             active={this.state.active === window.id}
             onStartMove={this.handleStartMove}
             onEndMove={this.handleEndMove} />;
