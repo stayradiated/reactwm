@@ -2,6 +2,12 @@ var Window = require('./window');
 
 var WindowManager = React.createClass({
 
+  componentWillMount: function () {
+    $(document.body).on('contextmenu', function (e) {
+      e.preventDefault();
+    });
+  },
+
   getInitialProps: function () {
     return {
       windows: []
@@ -11,7 +17,7 @@ var WindowManager = React.createClass({
   getInitialState: function () {
     return {
       order: this.props.windows.map(function (window) { return window.id; }),
-      active: null
+      mouse: null
     };
   },
 
