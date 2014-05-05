@@ -9,6 +9,7 @@ gulp.task('default', ['scripts', 'libs']);
 
 gulp.task('watch', ['default'], function () {
   gulp.watch('source/**/*', ['scripts']);
+  gulp.watch('dist/*.html', ['html']);
 });
 
 gulp.task('scripts', function () {
@@ -20,6 +21,11 @@ gulp.task('scripts', function () {
     .bundle()
     .pipe(source('app.js'))
     .pipe(gulp.dest('dist/js'))
+    .pipe(connect.reload());
+});
+
+gulp.task('html', function () {
+  return gulp.src('./dist/*.html')
     .pipe(connect.reload());
 });
 

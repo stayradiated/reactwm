@@ -1,5 +1,7 @@
 var Window = require('./window');
 
+var PADDING = 40;
+
 var WindowManager = React.createClass({
 
   componentDidMount: function () {
@@ -15,7 +17,7 @@ var WindowManager = React.createClass({
   getInitialState: function () {
     return {
       active: false,
-      guides: this.getGuides()
+      guides: {}
     };
   },
 
@@ -24,27 +26,39 @@ var WindowManager = React.createClass({
     var index = this.props.windows.indexOf(window);
     this.props.windows.splice(index, 1);
     this.props.windows.push(window);
-    this.setState({ active: window });
+    this.setState({
+      active: window,
+      guides: this.getGuides(window)
+    });
   },
 
   handleEndMove: function (window) {
-    this.setState({
-      active: false,
-      guides: this.getGuides()
-    });
   },
 
   handleContextMenu: function (e) {
     e.preventDefault();
   },
 
-  getGuides: function () {
-    var guides = { vertical: [], horizontal: [] };
+  getGuides: function (ignore) {
+    var el = this.getDOMNode();
+    var height = el.offsetHeight;
+    var width = el.offsetWidth;
+
+    var guides = {
+      vertical: [PADDING, width - PADDING],
+      horizontal: [PADDING, height - PADDING]
+    };
+
     this.props.windows.forEach(function (window) {
+      if (window === ignore) return;
       guides.vertical.push(window.x);
+      guides.vertical.push(window.x - PADDING);
       guides.horizontal.push(window.y);
+      guides.horizontal.push(window.y - PADDING);
       guides.vertical.push(window.x + window.width);
+      guides.vertical.push(window.x + window.width + PADDING);
       guides.horizontal.push(window.y + window.height);
+      guides.horizontal.push(window.y + window.height + PADDING);
     });
     return guides;
   },

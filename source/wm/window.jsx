@@ -7,7 +7,6 @@ var SNAP = 5;
 var Window = React.createClass({
 
   componentWillMount: function () {
-    console.log(this.props.guides);
     this.window = this.props.window;
     $(document.body).on('mousemove', this.handleMouseMove);
     $(document.body).on('mouseup', this.handleMouseUp);
@@ -33,13 +32,12 @@ var Window = React.createClass({
 
   snap: function (direction, value) {
     var guides = this.props.guides[direction];
-    console.log(direction, guides);
     for (var i = 0, len = guides.length; i < len; i++) {
       var pos = guides[i];
       if (value >= pos - SNAP && value <= pos + SNAP) {
         return pos;
       }
-    };
+    }
     return value;
   },
 
