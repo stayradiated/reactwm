@@ -63,6 +63,12 @@ var WindowManager = React.createClass({
     return guides;
   },
 
+  remove: function (window) {
+    var index = this.props.windows.indexOf(window);
+    this.props.windows.splice(index, 1);
+    this.forceUpdate();
+  },
+
   render: function () {
     return (
       <div className="window-manager"
@@ -73,6 +79,7 @@ var WindowManager = React.createClass({
             window={window}
             guides={this.state.guides}
             active={this.state.active === window}
+            onClose={this.remove}
             onStartMove={this.handleStartMove}
             onEndMove={this.handleEndMove} />;
         }, this)}

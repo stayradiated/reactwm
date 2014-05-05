@@ -6,6 +6,11 @@ var SNAP = 5;
 
 var Window = React.createClass({
 
+  ignore: function (e) {
+    e.preventDefault();
+    return false;
+  },
+
   componentWillMount: function () {
     this.window = this.props.window;
     $(document.body).on('mousemove', this.handleMouseMove);
@@ -15,8 +20,9 @@ var Window = React.createClass({
   getDefaultProps: function () {
     return {
       window: {},
-      onStartMove: function () {},
-      onEndMove: function () {}
+      onStartMove: _.identity,
+      onEndMove: _.identity,
+      onClose: _.identify
     };
   },
 
@@ -82,9 +88,13 @@ var Window = React.createClass({
   },
 
   handleMouseUp: function () {
-    if (this.state.mode === INACTIVE) return;
+    if (this.state.mode === INACTIVE) return true;
     this.setState({ mode: INACTIVE });
     this.props.onEndMove(this.window);
+  },
+
+  close: function () {
+    this.props.onClose(this.window);
   },
 
   render: function () {
@@ -103,8 +113,11 @@ var Window = React.createClass({
     return (
       <div
         className={classes} style={styles}
-        onMouseDown={this.handleMouseDown}>
-        <div className='title'>{ this.window.title }</div>
+        onMouseDown={this.handleMouseDown}> 
+        <header>
+          <div className="title">{this.window.title}</div>
+          <div className="close" onMouseDown={this.ignore} onClick={this.close}></div>
+        </header>
         <div className='content'></div>
       </div>
     );
