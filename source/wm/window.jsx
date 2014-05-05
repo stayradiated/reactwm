@@ -50,12 +50,14 @@ var Window = React.createClass({
   handleMouseDown: function (e) {
     var mode = e.button > 1 ? RESIZE : MOVE;
 
+    var parentEl = $(this.props.parent.getDOMNode()).offset();
+
     switch (mode) {
       case MOVE:
         var el = $(this.getDOMNode()).offset();
         offset = {
-          x: e.clientX - el.left,
-          y: e.clientY - el.top
+          x: e.clientX - el.left - parentEl.left,
+          y: e.clientY - el.top + parentEl.top
         };
         break;
       case RESIZE:

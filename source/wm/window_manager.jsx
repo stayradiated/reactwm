@@ -77,6 +77,7 @@ var WindowManager = React.createClass({
         { this.props.windows.map(function (window) {
           return <Window key={window.id}
             window={window}
+            parent={this}
             guides={this.state.guides}
             active={this.state.active === window}
             onClose={this.remove}
