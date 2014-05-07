@@ -1,7 +1,7 @@
 {
-  "name": "react",
-  "version": "0.0.0",
-  "description": "Trying out react",
+  "name": "reactwm",
+  "version": "0.0.1",
+  "description": "A minimal window manager built using React",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -24,10 +24,5 @@
     "browserify": "^3.46.0",
     "vinyl-source-stream": "^0.1.1",
     "gulp-connect": "^2.0.5"
-  },
-  "dependencies": {
-    "markdown": "^0.5.0",
-    "express": "^4.1.1",
-    "connect": "^2.14.5"
   }
 }
