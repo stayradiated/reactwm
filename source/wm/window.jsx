@@ -38,34 +38,38 @@ var Window = React.createClass({
     };
   },
 
-  snap: function (direction, value) {
+  snap: function (direction, value, width) {
     var guides = this.props.guides[direction];
     for (var i = 0, len = guides.length; i < len; i++) {
-      var pos = guides[i];
-      if (value >= pos - SNAP && value <= pos + SNAP) {
-        return pos;
+      var guide = guides[i];
+
+      if (value >= guide - SNAP && value <= guide + SNAP) {
+        return guide;
       }
     }
+
+    if (width) {
+      return this.snap(direction, value + width) - width;
+    }
+
     return value;
   },
 
   handleMouseDown: function (e) {
     var mode = e.button > 1 ? RESIZE : MOVE;
-
-    var parentEl = $(this.props.parent.getDOMNode()).offset();
+    var mouse = this.props.convertPoints(e);
 
     switch (mode) {
       case MOVE:
-        var el = $(this.getDOMNode()).offset();
         offset = {
-          x: e.clientX - el.left - parentEl.left,
-          y: e.clientY - el.top + parentEl.top
+          x: mouse.x - this.window.x,
+          y: mouse.y - this.window.y
         };
         break;
       case RESIZE:
         offset = {
-          x: e.clientX - this.window.width,
-          y: e.clientY - this.window.height
+          x: mouse.x - this.window.width,
+          y: mouse.y - this.window.height
         };
         break;
     }
@@ -75,15 +79,17 @@ var Window = React.createClass({
   },
 
   handleMouseMove: function (e) {
+    var mouse = this.props.convertPoints(e);
+
     switch (this.state.mode) {
       case MOVE:
-        this.window.x = this.snap('vertical', e.clientX - this.state.offset.x);
-        this.window.y = this.snap('horizontal', e.clientY - this.state.offset.y);
+        this.window.x = this.snap('vertical', mouse.x - this.state.offset.x, this.window.width);
+        this.window.y = this.snap('horizontal', mouse.y - this.state.offset.y, this.window.height);
         this.forceUpdate();
         break;
       case RESIZE:
-        var width = e.clientX - this.state.offset.x;
-        var height = e.clientY - this.state.offset.y;
+        var width = mouse.x - this.state.offset.x;
+        var height = mouse.y - this.state.offset.y;
         this.window.width = this.snap('vertical', width + this.window.x) - this.window.x;
         this.window.height = this.snap('horizontal', height + this.window.y) - this.window.y;
         this.forceUpdate();

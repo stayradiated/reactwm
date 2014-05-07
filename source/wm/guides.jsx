@@ -4,14 +4,22 @@ var Guides = React.createClass({
 
   render: function () {
 
+    var start = 100;
+    var end = 100;
+
     var i = 0;
     var guides = _.chain(this.props.guides).map(function (guides, orientation) {
       return guides.map(function (value) {
-        return <Guide key={i++} orientation={orientation} position={value} />
+        return (
+          <Guide key={orientation + value}
+            orientation={orientation}
+            start={start}
+            end={end}
+            position={value}
+          />
+        );
       });
     }).flatten(true).value();
-
-    console.log(guides);
 
     return (
       <div className="guides">

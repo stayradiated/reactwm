@@ -6,7 +6,11 @@ var PADDING = 20;
 var WindowManager = React.createClass({
 
   componentDidMount: function () {
-    $(this.getDOMNode()).on('contextmenu', this.handleContextMenu);
+    var el = $(this.getDOMNode());
+    el.on('contextmenu', this.handleContextMenu);
+    this.setState({
+      offset: el.offset()
+    });
   },
 
   getInitialProps: function () {
@@ -18,7 +22,11 @@ var WindowManager = React.createClass({
   getInitialState: function () {
     return {
       active: false,
-      guides: {}
+      guides: {},
+      offset: {
+        top: 0,
+        left: 0
+      }
     };
   },
 
@@ -63,9 +71,8 @@ var WindowManager = React.createClass({
       );
     });
 
-    guides.vertical = _.uniq(guides.vertical);
-    guides.horizontal = _.uniq(guides.horizontal);
-    console.log(guides);
+    guides.vertical = _.chain(guides.vertical).sort().uniq(true).value();
+    guides.horizontal = _.chain(guides.horizontal).sort().uniq(true).value();
 
     return guides;
   },
@@ -76,6 +83,13 @@ var WindowManager = React.createClass({
     this.forceUpdate();
   },
 
+  convertPoints: function (e) {
+    return {
+      x: e.clientX - this.state.offset.left,
+      y: e.clientY - this.state.offset.top
+    };
+  },
+
   render: function () {
 
     var windows = this.props.windows.map(function (window) {
@@ -84,6 +98,7 @@ var WindowManager = React.createClass({
         parent={this}
         guides={this.state.guides}
         active={this.state.active === window}
+        convertPoints={this.convertPoints}
         onClose={this.remove}
         onStartMove={this.handleStartMove}
         onEndMove={this.handleEndMove} />;
