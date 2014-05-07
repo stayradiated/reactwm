@@ -4,11 +4,14 @@ var browserify = require('browserify');
 var reactify = require('reactify');
 var source = require('vinyl-source-stream');
 var connect = require('gulp-connect');
+var sass = require('gulp-sass');
+var autoprefixer = require('gulp-autoprefixer');
 
-gulp.task('default', ['scripts', 'libs']);
+gulp.task('default', ['scss', 'scripts', 'libs']);
 
 gulp.task('watch', ['default'], function () {
   gulp.watch('source/**/*', ['scripts']);
+  gulp.watch('stylesheets/**/*', ['scss']);
   gulp.watch('dist/*.html', ['html']);
 });
 
@@ -26,6 +29,14 @@ gulp.task('scripts', function () {
 
 gulp.task('html', function () {
   return gulp.src('./dist/*.html')
+    .pipe(connect.reload());
+});
+
+gulp.task('scss', function () {
+  return gulp.src('./stylesheets/screen.scss')
+    .pipe(sass({logErrToConsole: true}))
+    .pipe(autoprefixer())
+    .pipe(gulp.dest('./dist/css'))
     .pipe(connect.reload());
 });
 

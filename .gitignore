@@ -1,2 +1,3 @@
 dist/js/*.js
+dist/css/*.css
 node_modules

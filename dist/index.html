@@ -3,128 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <title>ReactWM</title>
+  <link rel="stylesheet" href="css/screen.css">
   <script src="js/libs.js"></script>
   <script src="js/app.js"></script>
-  <style>
-    body {
-      margin: 0;
-      -webkit-user-select: none;
-      cursor: default;
-      font: bold 12px/18px 'Open Sans', sans-serif;
-      position: fixed;
-      top: 0; bottom: 0;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-
-    body > header {
-      height: 30px;
-      line-height: 30px;
-      background: #2c3e50;
-      color: #fff;
-      padding: 0;
-    }
-
-    body > header span {
-      padding: 0 20px;
-      display: inline-block;
-    }
-
-    body > header .title {
-      background: #e74c3c;
-    }
-
-    body > header .add-window:hover {
-      background: rgba(0, 0, 0, 0.3);
-    }
-
-    #content {
-      flex: 1;
-      background: #34495e;
-      display: flex;
-    }
-
-    .window-manager {
-      flex: 1;
-      position: relative;
-    }
-
-    .windows, .guides {
-      position: absolute;
-      top: 0; bottom: 0;
-      left: 0; right: 0;
-    }
-
-    .window {
-      position: absolute;
-      background: #fff;
-      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.5);
-      box-sizing: border-box;
-      border-radius: 3px;
-      background: #2980b9;
-      overflow: hidden;
-    }
-
-    .window.active {
-      background: #3498db;
-      box-shadow: 0 3px 20px 0 rgba(0, 0, 0, 0.6);
-    }
-
-      .window header {
-        display: flex;
-      }
-
-        .window header .title {
-          flex: 1;
-          color: #fff;
-          text-align: center;
-        }
-
-        .window header .close {
-          width: 12px;
-          height: 12px;
-          margin: 4px;
-          background: rgba(0, 0, 0, 0.4);
-          border-radius: 100%;
-        }
-
-          .window header .close:hover {
-            background: rgba(0, 0, 0, 0.6);
-          }
-
-      .window .content {
-        background: #fff;
-        position: absolute;
-        top: 20px; bottom: 3px;
-        left: 3px; right: 3px;
-        border-radius: 2px;
-      }
-
-      .guide {
-        position: absolute;
-        background: rgba(255, 255, 255, 0.3);
-      }
-
-      .guide-horizontal {
-        left: 0;
-        right: 0;
-        height: 1px;
-      }
-
-      .guide-vertical {
-        top: 0;
-        bottom: 0;
-        width: 1px;
-      }
-
-  </style>
 </head>
 <body>
   <header>
     <span class="title">ReactWM</span>
     <span class="add-window">Add Window</span>
   </header>
-  <div id="content"></div>
+  <div class="content"></div>
 </body>
 </html>
