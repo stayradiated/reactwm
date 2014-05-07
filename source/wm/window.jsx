@@ -1,3 +1,5 @@
+var classSet = React.addons.classSet;
+
 var INACTIVE = 0;
 var MOVE = 1;
 var RESIZE = 2;
@@ -100,7 +102,7 @@ var Window = React.createClass({
   },
 
   render: function () {
-    var classes = React.addons.classSet({
+    var classes = classSet({
       window: true,
       active: this.props.active
     });

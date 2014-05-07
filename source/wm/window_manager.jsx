@@ -1,6 +1,7 @@
 var Window = require('./window');
+var Guides = require('./guides');
 
-var PADDING = 40;
+var PADDING = 20;
 
 var WindowManager = React.createClass({
 
@@ -33,6 +34,7 @@ var WindowManager = React.createClass({
   },
 
   handleEndMove: function (window) {
+    this.setState({ guides: {} });
   },
 
   handleContextMenu: function (e) {
@@ -40,26 +42,31 @@ var WindowManager = React.createClass({
   },
 
   getGuides: function (ignore) {
-    var el = this.getDOMNode();
-    var height = el.offsetHeight;
-    var width = el.offsetWidth;
-
     var guides = {
-      vertical: [PADDING, width - PADDING],
-      horizontal: [PADDING, height - PADDING]
+      vertical: [],
+      horizontal: []
     };
 
     this.props.windows.forEach(function (window) {
       if (window === ignore) return;
-      guides.vertical.push(window.x);
-      guides.vertical.push(window.x - PADDING);
-      guides.horizontal.push(window.y);
-      guides.horizontal.push(window.y - PADDING);
-      guides.vertical.push(window.x + window.width);
-      guides.vertical.push(window.x + window.width + PADDING);
-      guides.horizontal.push(window.y + window.height);
-      guides.horizontal.push(window.y + window.height + PADDING);
+      guides.vertical.push(
+        window.x,
+        window.x + window.width,
+        window.x - PADDING,
+        window.x + window.width + PADDING
+      );
+      guides.horizontal.push(
+        window.y,
+        window.y + window.height,
+        window.y - PADDING,
+        window.y + window.height + PADDING
+      );
     });
+
+    guides.vertical = _.uniq(guides.vertical);
+    guides.horizontal = _.uniq(guides.horizontal);
+    console.log(guides);
+
     return guides;
   },
 
@@ -70,20 +77,24 @@ var WindowManager = React.createClass({
   },
 
   render: function () {
+
+    var windows = this.props.windows.map(function (window) {
+      return <Window key={window.id}
+        window={window}
+        parent={this}
+        guides={this.state.guides}
+        active={this.state.active === window}
+        onClose={this.remove}
+        onStartMove={this.handleStartMove}
+        onEndMove={this.handleEndMove} />;
+    }, this);
+
     return (
       <div className="window-manager"
         onMouseMove={this.handleMouseMove}
         onMouseUp={this.handleMouseUp}>
-        { this.props.windows.map(function (window) {
-          return <Window key={window.id}
-            window={window}
-            parent={this}
-            guides={this.state.guides}
-            active={this.state.active === window}
-            onClose={this.remove}
-            onStartMove={this.handleStartMove}
-            onEndMove={this.handleEndMove} />;
-        }, this)}
+          <Guides guides={this.state.guides} />
+          <div className="windows">{windows}</div>
       </div>
     );
   }

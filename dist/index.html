@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Hello React</title>
+  <title>ReactWM</title>
   <script src="js/libs.js"></script>
   <script src="js/app.js"></script>
   <style>
@@ -42,10 +42,18 @@
     #content {
       flex: 1;
       background: #34495e;
+      display: flex;
     }
 
     .window-manager {
+      flex: 1;
       position: relative;
+    }
+
+    .windows, .guides {
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 0; right: 0;
     }
 
     .window {
@@ -92,6 +100,24 @@
         left: 3px; right: 3px;
         border-radius: 2px;
       }
+
+      .guide {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      .guide-horizontal {
+        left: 0;
+        right: 0;
+        height: 1px;
+      }
+
+      .guide-vertical {
+        top: 0;
+        bottom: 0;
+        width: 1px;
+      }
+
   </style>
 </head>
 <body>
