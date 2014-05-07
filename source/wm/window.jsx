@@ -55,26 +55,43 @@ var Window = React.createClass({
     return value;
   },
 
+  handleMouseDownWithKey: function (e) {
+    if (!(e.ctrlKey || e.metaKey || e.altKey || e.button !== 0)) return;
+    this.handleMouseDown(e);
+  },
+
   handleMouseDown: function (e) {
-    var mode = e.button > 1 ? RESIZE : MOVE;
     var mouse = this.props.convertPoints(e);
+    if (e.button === 0) { this.startMove(mouse); }
+    else { this.startResize(mouse); }
+  },
 
-    switch (mode) {
-      case MOVE:
-        offset = {
-          x: mouse.x - this.window.x,
-          y: mouse.y - this.window.y
-        };
-        break;
-      case RESIZE:
-        offset = {
-          x: mouse.x - this.window.width,
-          y: mouse.y - this.window.height
-        };
-        break;
-    }
+  startMove: function (mouse) {
+    this.setState({
+      mode: MOVE,
+      offset: {
+        x: mouse.x - this.window.x,
+        y: mouse.y - this.window.y
+      }
+    });
 
-    this.setState({ mode: mode, offset: offset });
+    this.props.onStartMove(this.window);
+  },
+
+  startResize: function (mouse) {
+    var x = this.window.x + this.window.width / 2;
+    var y = this.window.y + this.window.height / 2;
+
+    this.setState({
+      mode: RESIZE,
+      offset: {
+        x: mouse.x - this.window.width,
+        y: mouse.y - this.window.height,
+        vertical: mouse.y < y ? 'top' : 'bottom',
+        horizontal: mouse.x < x ? 'left' : 'right'
+      }
+    });
+
     this.props.onStartMove(this.window);
   },
 
@@ -121,11 +138,9 @@ var Window = React.createClass({
     };
 
     return (
-      <div
-        className={classes} style={styles}
-        onMouseDown={this.handleMouseDown}> 
+      <div className={classes} style={styles} onMouseDown={this.handleMouseDownWithKey}>
         <header>
-          <div className="title">{this.window.title}</div>
+          <div className="title" onMouseDown={this.handleMouseDown}>{this.window.title}</div>
           <div className="close" onMouseDown={this.ignore} onClick={this.close}></div>
         </header>
         <div className='content'></div>
