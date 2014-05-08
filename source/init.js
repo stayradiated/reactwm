@@ -1,4 +1,4 @@
-var ReactWM = require('./wm');
+var ReactWM = require('./views');
 
 $(function () {
   var wm = new ReactWM($('.content')[0]);

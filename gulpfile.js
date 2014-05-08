@@ -1,5 +1,4 @@
 var gulp = require('gulp');
-var concat = require('gulp-concat');
 var browserify = require('browserify');
 var reactify = require('reactify');
 var source = require('vinyl-source-stream');
@@ -7,7 +6,7 @@ var connect = require('gulp-connect');
 var sass = require('gulp-sass');
 var autoprefixer = require('gulp-autoprefixer');
 
-gulp.task('default', ['scss', 'scripts', 'libs']);
+gulp.task('default', ['scss', 'scripts']); 
 
 gulp.task('watch', ['default'], function () {
   gulp.watch('source/**/*', ['scripts']);
@@ -16,15 +15,16 @@ gulp.task('watch', ['default'], function () {
 });
 
 gulp.task('scripts', function () {
-    return browserify({
-      extensions: ['.js', '.json', '.jsx']
-    })
-    .add('./source/init.js')
-    .transform(reactify)
-    .bundle()
-    .pipe(source('app.js'))
-    .pipe(gulp.dest('dist/js'))
-    .pipe(connect.reload());
+  return browserify({
+    extensions: ['.js', '.json', '.jsx']
+  })
+  .add('./source/init.js')
+  .transform(reactify)
+  .bundle()
+  .on('error', console.log.bind(console))
+  .pipe(source('app.js'))
+  .pipe(gulp.dest('dist/js'))
+  .pipe(connect.reload());
 });
 
 gulp.task('html', function () {
@@ -37,13 +37,6 @@ gulp.task('scss', function () {
     .pipe(sass({logErrToConsole: true}))
     .pipe(autoprefixer())
     .pipe(gulp.dest('./dist/css'))
-    .pipe(connect.reload());
-});
-
-gulp.task('libs', function () {
-  return gulp.src('source/vendor/*.js')
-    .pipe(concat('libs.js'))
-    .pipe(gulp.dest('dist/js'))
     .pipe(connect.reload());
 });
 
