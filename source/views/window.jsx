@@ -21,7 +21,6 @@ var Window = React.createClass({
 
   getDefaultProps: function () {
     return {
-      window: {},
       onStartMove: _.identity,
       onEndMove: _.identity,
       onClose: _.identify
@@ -61,7 +60,7 @@ var Window = React.createClass({
   },
 
   handleMouseDown: function (e) {
-    var mouse = this.props.convertPoints(e);
+    var mouse = this.props.parent.convertPoints(e);
     if (e.button === 0) { this.startMove(mouse); }
     else { this.startResize(mouse); }
   },
@@ -79,16 +78,11 @@ var Window = React.createClass({
   },
 
   startResize: function (mouse) {
-    var x = this.window.x + this.window.width / 2;
-    var y = this.window.y + this.window.height / 2;
-
     this.setState({
       mode: RESIZE,
       offset: {
-        x: mouse.x - this.window.width,
-        y: mouse.y - this.window.height,
-        vertical: mouse.y < y ? 'top' : 'bottom',
-        horizontal: mouse.x < x ? 'left' : 'right'
+        x: mouse.x,
+        y: mouse.y
       }
     });
 
@@ -96,19 +90,27 @@ var Window = React.createClass({
   },
 
   handleMouseMove: function (e) {
-    var mouse = this.props.convertPoints(e);
+    var mouse = this.props.parent.convertPoints(e);
 
     switch (this.state.mode) {
       case MOVE:
-        this.window.x = this.snap('vertical', mouse.x - this.state.offset.x, this.window.width);
-        this.window.y = this.snap('horizontal', mouse.y - this.state.offset.y, this.window.height);
+        this.window.move(mouse.x - this.state.offset.x, mouse.y - this.state.offset.y);
         this.forceUpdate();
         break;
       case RESIZE:
-        var width = mouse.x - this.state.offset.x;
-        var height = mouse.y - this.state.offset.y;
-        this.window.width = this.snap('vertical', width + this.window.x) - this.window.x;
-        this.window.height = this.snap('horizontal', height + this.window.y) - this.window.y;
+
+        var delta = {
+          x: this.state.offset.x - mouse.x,
+          y: this.state.offset.y - mouse.y
+        };
+
+        console.log(JSON.stringify({
+          mouse: mouse,
+          delta: delta,
+          state: this.state.offset
+        }, null, 2));
+
+        this.window.resize(this.state.offset.x, this.state.offset.y, delta.x, delta.y);
         this.forceUpdate();
         break;
     }
@@ -121,7 +123,7 @@ var Window = React.createClass({
   },
 
   close: function () {
-    this.props.onClose(this.window);
+    this.props.parent.remove(this.window);
   },
 
   render: function () {

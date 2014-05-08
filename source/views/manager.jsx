@@ -7,16 +7,11 @@ var Manager = React.createClass({
 
   componentDidMount: function () {
     var el = $(this.getDOMNode());
-    el.on('contextmenu', this.handleContextMenu);
+    el.on('contextmenu', this.disableContextMenu);
+
     this.setState({
       offset: el.offset()
     });
-  },
-
-  getInitialProps: function () {
-    return {
-      windows: [],
-    };
   },
 
   getInitialState: function () {
@@ -30,11 +25,13 @@ var Manager = React.createClass({
     };
   },
 
+  disableContextMenu: function (e) {
+    e.preventDefault();
+    return false;
+  },
+
   handleStartMove: function (window) {
-    // Move selected window to front of screen
-    var index = this.props.windows.indexOf(window);
-    this.props.windows.splice(index, 1);
-    this.props.windows.push(window);
+    this.props.manager.bringToFront(window);
     this.setState({
       active: window,
       guides: this.getGuides(window)
@@ -45,17 +42,15 @@ var Manager = React.createClass({
     this.setState({ guides: {} });
   },
 
-  handleContextMenu: function (e) {
-    e.preventDefault();
-  },
-
   getGuides: function (ignore) {
+    // TODO: Move to guides model
+
     var guides = {
       vertical: [],
       horizontal: []
     };
 
-    this.props.windows.forEach(function (window) {
+    this.props.manager.forEach(function (window) {
       if (window === ignore) return;
       guides.vertical.push(
         window.x,
@@ -77,12 +72,6 @@ var Manager = React.createClass({
     return guides;
   },
 
-  remove: function (window) {
-    var index = this.props.windows.indexOf(window);
-    this.props.windows.splice(index, 1);
-    this.forceUpdate();
-  },
-
   convertPoints: function (e) {
     return {
       x: e.clientX - this.state.offset.left,
@@ -92,14 +81,13 @@ var Manager = React.createClass({
 
   render: function () {
 
-    var windows = this.props.windows.map(function (window) {
-      return <Window key={window.id}
-        window={window}
+    var windows = this.props.manager.map(function (window) {
+      return <Window
+        key={window.id}
         parent={this}
+        window={window}
         guides={this.state.guides}
         active={this.state.active === window}
-        convertPoints={this.convertPoints}
-        onClose={this.remove}
         onStartMove={this.handleStartMove}
         onEndMove={this.handleEndMove} />;
     }, this);

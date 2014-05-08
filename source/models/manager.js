@@ -23,6 +23,7 @@ _.extend(Manager.prototype, {
   add: function (window) {
     if (!(window instanceof Window)) window = new Window(window);
     this.windows.push(window);
+    this.onChange();
   },
 
   remove: function (window) {
@@ -30,6 +31,7 @@ _.extend(Manager.prototype, {
     var index = this.windows.indexOf(window);
     if (index > -1) {
       this.windows.splice(index, 1);
+      this.onChange();
     }
   },
 
@@ -39,15 +41,29 @@ _.extend(Manager.prototype, {
 
   bringToFront: function (window) {
     if (!(window instanceof Window)) window = this.get(window);
-    this.remove(window);
-    this.add(window);
+    var index = this.windows.indexOf(window);
+    if (index > -1) {
+      this.windows.splice(index, 1);
+      this.windows.push(window);
+      this.onChange();
+    }
+  },
+
+  forEach: function (iterator, context) {
+    return this.windows.forEach(iterator, context);
+  },
+
+  map: function (iterator, context) {
+    return this.windows.map(iterator, context);
   },
 
   toJSON: function () {
     return _.map(this.windows, function (window) {
       return window.toJSON();
     });
-  }
+  },
+
+  onChange: function () {}
 
 });
 

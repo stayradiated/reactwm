@@ -1,21 +1,19 @@
-var WindowManager = require('./window_manager');
+var Manager = require('./manager');
 
-var ReactWM = function (el) {
-  this._index= 0;
-  this.windows = [];
+var ReactWM = function (manager, el) {
   this.el = el;
+  this.manager = manager;
+  this.manager.onChange = this.onChange.bind(this);
 };
 
 _.extend(ReactWM.prototype, {
 
-  add: function (window) {
-    window.id = ++this._index;
-    this.windows.push(window);
+  onChange: function () {
     this.render();
   },
 
   render: function () {
-    React.renderComponent(<WindowManager windows={this.windows} />, this.el);
+    React.renderComponent(<Manager manager={this.manager} />, this.el);
   }
 
 });
