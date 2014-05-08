@@ -34,7 +34,7 @@ var Manager = React.createClass({
     this.props.manager.bringToFront(window);
     this.setState({
       active: window,
-      guides: this.getGuides(window)
+      guides: this.props.manager.guides(window)
     });
   },
 
@@ -42,41 +42,15 @@ var Manager = React.createClass({
     this.setState({ guides: {} });
   },
 
-  getGuides: function (ignore) {
-    // TODO: Move to guides model
-
-    var guides = {
-      vertical: [],
-      horizontal: []
-    };
-
-    this.props.manager.forEach(function (window) {
-      if (window === ignore) return;
-      guides.vertical.push(
-        window.x,
-        window.x + window.width,
-        window.x - PADDING,
-        window.x + window.width + PADDING
-      );
-      guides.horizontal.push(
-        window.y,
-        window.y + window.height,
-        window.y - PADDING,
-        window.y + window.height + PADDING
-      );
-    });
-
-    guides.vertical = _.chain(guides.vertical).sort().uniq(true).value();
-    guides.horizontal = _.chain(guides.horizontal).sort().uniq(true).value();
-
-    return guides;
-  },
-
   convertPoints: function (e) {
     return {
       x: e.clientX - this.state.offset.left,
       y: e.clientY - this.state.offset.top
     };
+  },
+
+  handleClose: function (window) {
+    this.props.manager.remove(window);
   },
 
   render: function () {
@@ -89,7 +63,8 @@ var Manager = React.createClass({
         guides={this.state.guides}
         active={this.state.active === window}
         onStartMove={this.handleStartMove}
-        onEndMove={this.handleEndMove} />;
+        onEndMove={this.handleEndMove}
+        onClose={this.handleClose.bind(this, window)} />;
     }, this);
 
     return (

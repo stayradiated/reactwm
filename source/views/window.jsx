@@ -4,8 +4,6 @@ var INACTIVE = 0;
 var MOVE = 1;
 var RESIZE = 2;
 
-var SNAP = 5;
-
 var Window = React.createClass({
 
   ignore: function (e) {
@@ -35,23 +33,6 @@ var Window = React.createClass({
         y: 0
       }
     };
-  },
-
-  snap: function (direction, value, width) {
-    var guides = this.props.guides[direction];
-    for (var i = 0, len = guides.length; i < len; i++) {
-      var guide = guides[i];
-
-      if (value >= guide - SNAP && value <= guide + SNAP) {
-        return guide;
-      }
-    }
-
-    if (width) {
-      return this.snap(direction, value + width) - width;
-    }
-
-    return value;
   },
 
   handleMouseDownWithKey: function (e) {
@@ -116,7 +97,7 @@ var Window = React.createClass({
   },
 
   close: function () {
-    this.props.parent.remove(this.window);
+    this.props.onClose();
   },
 
   render: function () {
