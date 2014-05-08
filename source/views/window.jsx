@@ -21,11 +21,8 @@ var Window = React.createClass({
     $(document).on('mouseup', this.handleMouseUp);
   },
 
-  getDefaultProps: function () {
-    return {
-      onStartMove: _.identity,
-      onEndMove: _.identity
-    };
+  componentWillUnmount: function () {
+    this.window.off('change', this.forceUpdate);
   },
 
   handlePropagation: function (e) {
@@ -77,7 +74,7 @@ var Window = React.createClass({
   render: function () {
     var classes = classSet({
       window: true,
-      active: this.props.active
+      active: this.window.isFocused()
     });
 
     var styles = {

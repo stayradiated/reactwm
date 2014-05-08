@@ -1,4 +1,5 @@
 var $ = require('jquery');
+var _ = require('lodash');
 var React = require('react');
 
 // TODO: Figure out a sensible way to combine these into one class
@@ -36,17 +37,15 @@ $(function () {
 
   var data = localStorage.windows ? JSON.parse(localStorage.windows) : [];
 
-  var manager = new ManagerModel(data);
+  var manager = window.m = new ManagerModel(data);
 
-  manager.setup(function (window) {
-    console.log(window);
-    return <Settings />;
+  manager.forEach(function (window) {
+    window.content = <Settings />;
   });
 
-  var save = function () {
-    console.log('save');
+  var save = _.debounce(function () {
     localStorage.windows = manager.toString();
-  };
+  }, 1000);
 
   manager.on('change', save);
   manager.on('change:windows', save);
@@ -73,12 +72,10 @@ $(function () {
     y: 200
   });
 
-  window.settings = [settings1, settings2];
-
   $('.add-window').on('click', function () {
     manager.open(<Settings />, { 
       id: 'settings-' + Date.now(),
-    title: 'Settings ' + Date.now(),
+      title: 'Settings ' + Date.now(),
       width: 300,
       height: 300,
       x: 20,

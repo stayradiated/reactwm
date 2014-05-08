@@ -216,7 +216,20 @@ _.extend(Window.prototype, {
    */
 
   requestFocus: function () {
-    if (this.manager) this.manager.bringToFront(this);
+    if (! this.manager) {
+      throw new Error('Cannot focus a window that is not being managed');
+    }
+    this.manager.focus(this);
+  },
+
+
+  /**
+   * check if the window is focused
+   */
+
+  isFocused: function () {
+    if (! this.manager) return false;
+    return this.manager.active === this;
   },
 
 
@@ -248,7 +261,8 @@ _.extend(Window.prototype, {
       maxHeight:  this.maxHeight,
       minHeight:  this.minHeight,
       title:      this.title,
-      isOpen:     this.isOpen
+      isOpen:     this.isOpen,
+      active:     this.active
     };
   }
 

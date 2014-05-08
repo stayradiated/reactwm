@@ -14,6 +14,10 @@ var Manager = React.createClass({
     this.manager.on('change', this.forceUpdate, this);
   },
 
+  componentWillUnmount: function () {
+    this.manager.off('change', this.forceUpdate);
+  },
+
   componentDidMount: function () {
     var el = $(this.getDOMNode());
     el.on('contextmenu', this.ignore);

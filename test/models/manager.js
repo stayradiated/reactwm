@@ -118,7 +118,7 @@ describe('manager', function () {
 
   });
 
-  describe('.bringToFront', function () {
+  describe('.focus', function () {
 
     it('should move a window to the end of the array', function () {
       var win1 = new Window({ id: 1 });
@@ -130,14 +130,57 @@ describe('manager', function () {
       manager.add(win3);
       assert.deepEqual(manager.order, [1, 2, 3]);
 
-      manager.bringToFront(win1);
+      manager.focus(win1);
       assert.deepEqual(manager.order, [2, 3, 1]);
 
-      manager.bringToFront(win2);
+      manager.focus(win2);
       assert.deepEqual(manager.order, [3, 1, 2]);
 
-      manager.bringToFront(win3);
+      manager.focus(win3);
       assert.deepEqual(manager.order, [1, 2, 3]);
+    });
+
+  });
+
+  describe('.filter', function () {
+
+    it('should filter the windows', function () {
+      var win1 = new Window({ id: 1 });
+      var win2 = new Window({ id: 2 });
+      var win3 = new Window({ id: 3 });
+
+      manager.add(win1);
+      manager.add(win2);
+      manager.add(win3);
+
+      var spy = sinon.spy(function (window) {
+        return window.id > 1;
+      });
+
+      var results = manager.filter(spy);
+
+      assert.deepEqual(results, [win2, win3]);
+
+      assert.deepEqual(spy.args[0], [win1]);
+      assert.deepEqual(spy.args[1], [win2]);
+      assert.deepEqual(spy.args[2], [win3]);
+
+      assert.equal(spy.thisValues[0], manager);
+      assert.equal(spy.thisValues[1], manager);
+      assert.equal(spy.thisValues[2], manager);
+    });
+
+    it('should filter the windows in the correct context', function () {
+      var win1 = new Window({ id: 1 });
+      manager.add(win1);
+
+      var spy = sinon.spy(function () { return false; });
+      var results = manager.filter(spy, win1);
+
+      assert(spy.calledOnce);
+      assert.deepEqual(results, []);
+      assert.deepEqual(spy.args[0], [win1]);
+      assert.equal(spy.thisValues[0], win1);
     });
 
   });
@@ -224,6 +267,7 @@ describe('manager', function () {
       };
 
       manager.add(props);
+      console.log(manager.toJSON());
       assert.deepEqual(manager.toJSON(), [props]);
     });
 

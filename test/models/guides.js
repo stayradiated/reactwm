@@ -9,7 +9,7 @@ describe('Guides', function () {
 
   beforeEach(function () {
     manager = new Manager();
-    guides = new Guides(manager);
+    guides = manager.guides;
   });
 
   describe('.generate', function () {

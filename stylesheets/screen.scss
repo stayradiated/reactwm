@@ -2,7 +2,7 @@ body {
   margin: 0;
   -webkit-user-select: none;
   cursor: default;
-  font: bold 12px/18px 'Open Sans', sans-serif;
+  font: 12px/18px 'Open Sans', sans-serif;
   position: fixed;
   top: 0; bottom: 0;
   width: 100%;
@@ -36,6 +36,7 @@ body {
   background: #34495e;
   display: flex;
   flex: 1;
+  overflow: hidden;
 }
 
 .window-manager {
@@ -53,7 +54,6 @@ body {
   position: absolute;
   background: #fff;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.5);
-  border-radius: 3px;
   background: #2980b9;
   overflow: hidden;
   padding: 3px;
@@ -75,7 +75,6 @@ body {
       height: 12px;
       margin: 4px;
       background: rgba(0, 0, 0, 0.4);
-      border-radius: 100%;
 
       &:hover {
         background: rgba(0, 0, 0, 0.6);
@@ -86,7 +85,6 @@ body {
 
   .content {
     background: #fff;
-    border-radius: 2px;
     position: absolute;
     top: 25px; bottom: 3px;
     left: 3px; right: 3px;
@@ -112,3 +110,6 @@ body {
 }
 
 
+.settings {
+  padding: 20px;
+}

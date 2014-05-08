@@ -6,7 +6,6 @@ var Guides = require('./guides');
 var Manager = function (windows) {
   signals.convert(this);
 
-  this.active = null;
   this.windows = {};
   this.order = [];
   this.guides = new Guides(this);
@@ -19,19 +18,6 @@ var Manager = function (windows) {
 };
 
 _.extend(Manager.prototype, {
-
-  /**
-   * setup the components
-   */
-
-  setup: function (iterator, context) {
-    context = context || this;
-    this.forEach(function (window) {
-      console.log('window', window);
-      window.content = iterator.call(context, window);
-    });
-    this.emit('change');
-  },
 
 
   /**
@@ -47,7 +33,7 @@ _.extend(Manager.prototype, {
 
   /**
    * get a window by it's id
-   * - id (number|string) : window id
+   * - id (string) : window id
    */
 
   get: function (id) {
@@ -57,7 +43,7 @@ _.extend(Manager.prototype, {
 
   /**
    * check if a window exists in this manager
-   * - window (window|number|string)
+   * - window (window|string)
    */
 
   has: function (window) {
@@ -74,8 +60,6 @@ _.extend(Manager.prototype, {
   add: function (window) {
     if (!(window instanceof Window)) window = new Window(window);
     window.manager = this;
-
-    console.log('adding window', window);
 
     this.windows[window.id] = window;
     this.order.push(window.id);
@@ -97,7 +81,7 @@ _.extend(Manager.prototype, {
 
   /**
    * remove a window
-   * - window (Window|number|string)
+   * - window (Window|string)
    */
 
   remove: function (window) {
@@ -149,16 +133,16 @@ _.extend(Manager.prototype, {
 
 
   /*
-   * move a window to the end of the stack
-   * - window (Window|number|string)
+   * focus on a window
+   * - window (Window|string)
    */
 
-  bringToFront: function (window) {
+  focus: function (window) {
     var id = _.isObject(window) ? window.id : window;
     var index = this.order.indexOf(id);
 
     if (index < 0) {
-      throw new Error('Can not bring to front a window it cannot find: ' + id);
+      throw new Error('Can not focus on a window it cannot find: ' + id);
     } else if (index == this.length() - 1) {
       // already at the end of the stack
       return;
@@ -170,9 +154,20 @@ _.extend(Manager.prototype, {
     this.emit('change');
   },
 
+  /**
+   * get the active window
+   */
+
+  active: function () {
+    if (this.order.length === 0) return false;
+    return this.order[this.order.length - 1];
+  },
+
 
   /**
    * filter the windows
+   * - predicate (function) : should return true/false
+   * - [context] (object) : context to run function as
    */
 
   filter: function (predicate, context) {
@@ -187,8 +182,8 @@ _.extend(Manager.prototype, {
 
   /*
    * loop through each window
-   * - iterator (function )
-   * - [context]
+   * - iterator (function)
+   * - [context] (object)
    */
 
   forEach: function (iterator, context) {
@@ -201,7 +196,7 @@ _.extend(Manager.prototype, {
 
   /*
    * map over each window
-   * - iterator (function )
+   * - iterator (function)
    * - [context]
    */
 
