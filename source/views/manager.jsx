@@ -3,7 +3,7 @@ var Guides = require('./guides');
 
 var PADDING = 20;
 
-var WindowManager = React.createClass({
+var Manager = React.createClass({
 
   componentDidMount: function () {
     var el = $(this.getDOMNode());
@@ -116,4 +116,4 @@ var WindowManager = React.createClass({
 
 });
 
-module.exports = WindowManager;
+module.exports = Manager;

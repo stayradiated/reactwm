@@ -1,15 +1,25 @@
 var _ = require('underscore');
 
 var Window = function (props) {
-  props       = props        || {};
-  this.x      = props.x      || 0;
-  this.y      = props.y      || 0;
-  this.width  = props.width  || 0;
-  this.height = props.height || 0;
-  this.title  = props.title  || '';
+  props = _.defaults(props || {}, this.defaults);
+  this.id     = props.id;
+  this.x      = props.x;
+  this.y      = props.y;
+  this.width  = props.width;
+  this.height = props.height;
+  this.title  = props.title;
 };
 
 _.extend(Window.prototype, {
+
+  defaults: {
+    id: undefined,
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    title: ''
+  },
 
   move: function (x, y) {
     this.x = x;
@@ -41,6 +51,17 @@ _.extend(Window.prototype, {
 
   rename: function (title) {
     this.title = title;
+  },
+
+  toJSON: function () {
+    return {
+      id:      this.id,
+      x:       this.x,
+      y:       this.y,
+      width:   this.width,
+      height:  this.height,
+      title:   this.title
+    };
   }
 
 });

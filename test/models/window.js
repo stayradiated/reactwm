@@ -113,4 +113,22 @@ describe('window', function () {
 
   });
 
+  describe('.toJSON', function () {
+
+    it('should export to a standard JS object', function () {
+      var props = {
+        id: 'window-1',
+        x: 20,
+        y: 30,
+        width: 200,
+        height: 400,
+        title: 'Test'
+      };
+
+      var window = new Window(props);
+      assert.deepEqual(window.toJSON(), props);
+    });
+
+  });
+
 });
