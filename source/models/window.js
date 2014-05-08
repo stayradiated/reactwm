@@ -26,27 +26,27 @@ _.extend(Window.prototype, {
     this.y = y;
   },
 
-  resize: function (originX, originY, deltaX, deltaY) {
-    var halfWidth = this.x + (this.width / 2);
-    var halfHeight = this.y + (this.height / 2);
-
-    if (originX < halfWidth) {
-      // move left side
-      this.x += deltaX;
-      this.width -= deltaX;
+  resize: function (deltaX, deltaY, isLeft, isTop) {
+    if (isLeft) {
+      this.x -= deltaX;
+      this.width += deltaX;
     } else {
-      // move right side
       this.width -= deltaX;
     }
 
-    if (originY < halfHeight) {
-      // move top side
-      this.y += deltaY;
-      this.height -= deltaY;
+    if (isTop) {
+      this.y -= deltaY;
+      this.height += deltaY;
     } else {
-      // move bottom side
       this.height -= deltaY;
     }
+  },
+
+  quadrant: function (x, y) {
+    return {
+      top: y < this.y + (this.height / 2),
+      left: x < this.x + (this.width / 2)
+    };
   },
 
   rename: function (title) {

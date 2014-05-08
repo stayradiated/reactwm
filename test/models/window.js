@@ -2,6 +2,18 @@ var assert = require('chai').assert;
 var Window = require('../../source/models/window');
 
 describe('window', function () {
+  var window;
+
+  beforeEach(function () {
+    window = new Window({
+      id: 0,
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 100,
+      title: 'title'
+    });
+  });
 
   describe('.move', function () {
 
@@ -20,78 +32,99 @@ describe('window', function () {
 
   });
 
-  describe('.resize', function () {
+  describe('.quadrant', function () {
 
-    var window;
+    it('top left', function () {
+      assert.deepEqual(window.quadrant(1, 1), {
+        top: true,
+        left: true
+      });
+    });
+
+    it('top right', function () {
+      assert.deepEqual(window.quadrant(99, 1), {
+        top: true,
+        left: false
+      });
+    });
+
+    it('bottom left', function () {
+      assert.deepEqual(window.quadrant(1, 99), {
+        top: false,
+        left: true
+      });
+    });
+
+    it('bottom right', function () {
+      assert.deepEqual(window.quadrant(99, 99), {
+        top: false,
+        left: false
+      });
+    });
+
+  });
+
+  describe('.resize', function () {
     var start  = 100;
     var change = 20;
 
     beforeEach(function () {
-      window = new Window({
-        x: start, y: start,
-        width: start, height: start
-      });
+      window.move(start, start);
+      window.width = start;
+      window.height = start;
     });
 
     describe('left', function () {
-      var origin = 120;
-
       it('in', function () {
-        window.resize(origin, 0, -change, 0);
-        assert.equal(window.x, start - change);
-        assert.equal(window.width, start + change);
+        window.resize(-change, 0, true, false);
+        assert.equal(window.x, start + change);
+        assert.equal(window.width, start - change);
       });
 
       it('out', function () {
-        window.resize(origin, 0, +change, 0);
-        assert.equal(window.x, start + change);
-        assert.equal(window.width, start - change);
+        window.resize(change, 0, true, false);
+        assert.equal(window.x, start - change);
+        assert.equal(window.width, start + change);
       });
     });
 
     describe('top', function () {
-      var origin = 120;
-
       it('in', function () {
-        window.resize(0, origin, 0, -change);
-        assert.equal(window.y, start - change);
-        assert.equal(window.height, start + change);
+        window.resize(0, -change, false, true);
+        assert.equal(window.y, start + change);
+        assert.equal(window.height, start - change);
       });
 
       it('out', function () {
-        window.resize(0, origin, 0, +change);
-        assert.equal(window.y, start + change);
-        assert.equal(window.height, start - change);
+        window.resize(0, +change, false, true);
+        assert.equal(window.y, start - change);
+        assert.equal(window.height, start + change);
       });
     });
 
     describe('right', function () {
-      var origin = 180;
-
       it('in', function () {
-        window.resize(origin, 0, -change, 0);
+        window.resize(-change, 0, false, false);
         assert.equal(window.x, start);
         assert.equal(window.width, start + change);
       });
 
       it('out', function () {
-        window.resize(origin, 0, +change, 0);
+        window.resize(change, 0, false, false);
         assert.equal(window.x, start);
         assert.equal(window.width, start - change);
       });
     });
 
     describe('bottom', function () {
-      var origin = 180;
-
       it('in', function () {
-        window.resize(0, origin, 0, -change);
+        window.resize(0, -change, false, false);
         assert.equal(window.y, start);
         assert.equal(window.height, start + change);
       });
 
       it('out', function () {
-        window.resize(0, origin, 0, +change);
+        window.resize(0, change, false, false);
         assert.equal(window.y, start);
         assert.equal(window.height, start - change);
       });

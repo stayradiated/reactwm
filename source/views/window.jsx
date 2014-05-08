@@ -82,8 +82,9 @@ var Window = React.createClass({
       mode: RESIZE,
       offset: {
         x: mouse.x,
-        y: mouse.y
-      }
+        y: mouse.y,
+      },
+      quadrant: this.window.quadrant(mouse.x, mouse.y)
     });
 
     this.props.onStartMove(this.window);
@@ -98,27 +99,19 @@ var Window = React.createClass({
         this.forceUpdate();
         break;
       case RESIZE:
-
         var delta = {
           x: this.state.offset.x - mouse.x,
           y: this.state.offset.y - mouse.y
         };
-
-        console.log(JSON.stringify({
-          mouse: mouse,
-          delta: delta,
-          state: this.state.offset
-        }, null, 2));
-
-        this.window.resize(this.state.offset.x, this.state.offset.y, delta.x, delta.y);
-        this.forceUpdate();
+        this.window.resize(delta.x, delta.y, this.state.quadrant.left, this.state.quadrant.top);
+        this.setState({ offset: mouse });
         break;
     }
   },
 
   handleMouseUp: function () {
     if (this.state.mode === INACTIVE) return true;
-    this.setState({ mode: INACTIVE });
+    this.setState({ mode: INACTIVE, quadrant: undefined });
     this.props.onEndMove(this.window);
   },
 
