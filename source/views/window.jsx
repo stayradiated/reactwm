@@ -38,7 +38,7 @@ var Window = React.createClass({
   },
 
   handleMouseDownWithKey: function (e) {
-    if (!(e.ctrlKey || e.metaKey || e.altKey || e.button !== 0)) return;
+    if (!(e.ctrlKey || e.metaKey || e.altKey || e.button !== 0)) return this.ignore(e);
     this.handleMouseDown(e);
   },
 
