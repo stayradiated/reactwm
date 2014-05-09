@@ -1,3 +1,5 @@
+var _ = require('lodash');
+
 var Guides = function () {
   this.guides = [];
 };
@@ -32,7 +34,37 @@ _.extend(Guides.prototype, {
 
   map: function (iterator, context) {
     return this.guides.map(iterator, context);
-  }
+  },
+
+  generate: function (manager, ignore) {
+    var guides = {
+      vertical: new Guides(),
+      horizontal: new Guides()
+    };
+
+    manager.forEach(function (window) {
+      if (window === ignore) return;
+
+      guides.vertical.add(
+        window.x,
+        window.x + window.width,
+        window.x - this.guidePadding,
+        window.x + window.width + this.guidePadding
+      );
+      guides.horizontal.add(
+        window.y,
+        window.y + window.height,
+        window.y - this.guidePadding,
+        window.y + window.height + this.guidePadding
+      );
+    }, this);
+
+    guides.vertical.clean();
+    guides.horizontal.clean();
+
+    return guides;
+  },
+
 
 });
 

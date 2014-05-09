@@ -1,3 +1,7 @@
+var _ = require('lodash');
+var $ = require('jquery');
+var React = require('react');
+
 var Window = require('./window');
 var Guides = require('./guides');
 
@@ -34,7 +38,7 @@ var Manager = React.createClass({
     this.props.manager.bringToFront(window);
     this.setState({
       active: window,
-      guides: this.props.manager.guides(window)
+      // guides: this.props.manager.guides(window)
     });
   },
 
@@ -49,10 +53,6 @@ var Manager = React.createClass({
     };
   },
 
-  handleClose: function (window) {
-    this.props.manager.remove(window);
-  },
-
   render: function () {
 
     var windows = this.props.manager.map(function (window) {
@@ -61,10 +61,8 @@ var Manager = React.createClass({
         parent={this}
         window={window}
         guides={this.state.guides}
-        active={this.state.active === window}
-        onStartMove={this.handleStartMove}
-        onEndMove={this.handleEndMove}
-        onClose={this.handleClose.bind(this, window)} />;
+        onStartMove={this.handleStartMove.bind(this, window)}
+        onEndMove={this.handleEndMove.bind(this, window)} />;
     }, this);
 
     return (

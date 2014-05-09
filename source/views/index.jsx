@@ -1,3 +1,5 @@
+var _ = require('lodash');
+var React = require('react');
 var Manager = require('./manager');
 
 var ReactWM = function (manager, el) {

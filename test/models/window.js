@@ -132,6 +132,27 @@ describe('window', function () {
 
   });
 
+  describe('.close', function () {
+
+    it('should close the window', function () {
+      var window = new Window();
+      assert.equal(window.open, true);
+
+      window.close();
+      assert.equal(window.open, false);
+    });
+
+  });
+
+  describe('.requestFocus', function () {
+
+    it('should focus the window', function () {
+      var window = new Window();
+      window.requestFocus();
+    });
+
+  });
+
   describe('.rename', function () {
 
     it('should rename the window', function () {
@@ -155,7 +176,8 @@ describe('window', function () {
         y: 30,
         width: 200,
         height: 400,
-        title: 'Test'
+        title: 'Test',
+        open: true
       };
 
       var window = new Window(props);

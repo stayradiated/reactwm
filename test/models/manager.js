@@ -28,6 +28,24 @@ describe('manager', function () {
 
   });
 
+  describe('.at', function () {
+
+    it('should get a window by its index', function () {
+      var win1 = new Window();
+      var win2 = new Window();
+      var win3 = new Window();
+
+      manager.add(win1);
+      manager.add(win2);
+      manager.add(win3);
+
+      assert.equal(manager.at(0), win1);
+      assert.equal(manager.at(1), win2);
+      assert.equal(manager.at(2), win3);
+    });
+
+  });
+
   describe('.get', function () {
 
     it('should get a window by its id', function () {
@@ -99,7 +117,8 @@ describe('manager', function () {
         y: 300,
         width: 100,
         height: 50,
-        title: 'My amazing window'
+        title: 'My amazing window',
+        open: true
       };
 
       manager.add(props);

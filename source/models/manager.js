@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 var Window = require('./window');
 var Guides = require('./guides');
 
@@ -8,11 +8,23 @@ var Manager = function () {
 
 _.extend(Manager.prototype, {
 
-  guidePadding: 20,
+  onChange: _.noop,
+
+
+  /**
+   * get a window at a specified index
+   * - i (int) : index
+   */
 
   at: function (i) {
     return this.windows[i];
   },
+
+
+  /**
+   * get a window by it's id
+   * - id (int) : window id
+   */
 
   get: function (id) {
     for (var i = 0, len = this.windows.length; i < len; i++) {
@@ -23,11 +35,24 @@ _.extend(Manager.prototype, {
     return undefined;
   },
 
+  
+  /**
+   * add a window
+   * - window (Window|object)
+   */
+
   add: function (window) {
     if (!(window instanceof Window)) window = new Window(window);
+    window.manager = this;
     this.windows.push(window);
     this.onChange();
   },
+
+
+  /**
+   * remove a window
+   * - window (Window|int)
+   */
 
   remove: function (window) {
     if (!(window instanceof Window)) window = this.get(window);
@@ -38,9 +63,21 @@ _.extend(Manager.prototype, {
     }
   },
 
+  
+  /**
+   * count how many windows are open
+   * > int
+   */
+
   length: function () {
     return this.windows.length;
   },
+
+
+  /*
+   * move a window to the end of the stack
+   * - window (Window|int)
+   */
 
   bringToFront: function (window) {
     if (!(window instanceof Window)) window = this.get(window);
@@ -52,42 +89,28 @@ _.extend(Manager.prototype, {
     }
   },
 
-  guides: function (ignore) {
-    var guides = {
-      vertical: new Guides(),
-      horizontal: new Guides()
-    };
 
-    this.windows.forEach(function (window) {
-      if (window === ignore) return;
-
-      guides.vertical.add(
-        window.x,
-        window.x + window.width,
-        window.x - this.guidePadding,
-        window.x + window.width + this.guidePadding
-      );
-      guides.horizontal.add(
-        window.y,
-        window.y + window.height,
-        window.y - this.guidePadding,
-        window.y + window.height + this.guidePadding
-      );
-    }, this);
-
-    guides.vertical.clean();
-    guides.horizontal.clean();
-
-    return guides;
-  },
+  /*
+   * loop through each window
+   */
 
   forEach: function (iterator, context) {
     return this.windows.forEach(iterator, context);
   },
 
+
+  /*
+   * map over each window
+   */
+
   map: function (iterator, context) {
     return this.windows.map(iterator, context);
   },
+
+
+  /*
+   * export as a standard JS array
+   */
 
   toJSON: function () {
     return _.map(this.windows, function (window) {
@@ -95,7 +118,14 @@ _.extend(Manager.prototype, {
     });
   },
 
-  onChange: function () {}
+
+  /*
+   * export as a JSON string
+   */
+
+  toString: function () {
+    return JSON.stringify(this);
+  }
 
 });
 

@@ -1,3 +1,5 @@
+var _ = require('lodash');
+var React = require('react');
 var Guide = require('./guide');
 
 var Guides = React.createClass({

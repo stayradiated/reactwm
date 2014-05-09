@@ -1,4 +1,7 @@
-var classSet = React.addons.classSet;
+var _ = require('lodash');
+var $ = require('jquery');
+var React = require('react');
+var classSet = require('react/addons').addons.classSet;
 
 var INACTIVE = 0;
 var MOVE = 1;
@@ -13,15 +16,14 @@ var Window = React.createClass({
 
   componentWillMount: function () {
     this.window = this.props.window;
-    $(document.body).on('mousemove', this.handleMouseMove);
-    $(document.body).on('mouseup', this.handleMouseUp);
+    $(document).on('mousemove', this.handleMouseMove);
+    $(document).on('mouseup', this.handleMouseUp);
   },
 
   getDefaultProps: function () {
     return {
       onStartMove: _.identity,
-      onEndMove: _.identity,
-      onClose: _.identify
+      onEndMove: _.identity
     };
   },
 
@@ -55,7 +57,7 @@ var Window = React.createClass({
       }
     });
 
-    this.props.onStartMove(this.window);
+    this.props.onStartMove();
   },
 
   startResize: function (mouse) {
@@ -72,6 +74,7 @@ var Window = React.createClass({
   },
 
   handleMouseMove: function (e) {
+    if (this.state.mode == INACTIVE) return true;
     var mouse = this.props.parent.convertPoints(e);
 
     switch (this.state.mode) {
@@ -81,8 +84,8 @@ var Window = React.createClass({
         break;
       case RESIZE:
         var delta = {
-          x: this.state.offset.x - mouse.x,
-          y: this.state.offset.y - mouse.y
+          x: mouse.x - this.state.offset.x,
+          y: mouse.y - this.state.offset.y
         };
         this.window.resize(delta.x, delta.y, this.state.quadrant.left, this.state.quadrant.top);
         this.setState({ offset: mouse });
@@ -93,10 +96,15 @@ var Window = React.createClass({
   handleMouseUp: function () {
     if (this.state.mode === INACTIVE) return true;
     this.setState({ mode: INACTIVE, quadrant: undefined });
-    this.props.onEndMove(this.window);
+    this.props.onEndMove();
+  },
+
+  focus: function () {
+    this.props.window.requestFocus();
   },
 
   close: function () {
+    this.props.window.close();
     this.props.onClose();
   },
 
@@ -106,20 +114,23 @@ var Window = React.createClass({
       active: this.props.active
     });
 
-    var styles = {
+    var position = {
       top: this.window.y,
-      left: this.window.x,
+      left: this.window.x
+    };
+
+    var size = {
       width: this.window.width,
       height: this.window.height
     };
 
     return (
-      <div className={classes} style={styles} onMouseDown={this.handleMouseDownWithKey}>
+      <div className={classes} style={position} onMouseDown={this.handleMouseDown}>
         <header>
-          <div className="title" onMouseDown={this.handleMouseDown}>{this.window.title}</div>
+          <div className="title">{this.window.title}</div>
           <div className="close" onMouseDown={this.ignore} onClick={this.close}></div>
         </header>
-        <div className='content'></div>
+        <div className='content' onMouseDown={this.handleMouseDownWithKey} style={size}></div>
       </div>
     );
   }
