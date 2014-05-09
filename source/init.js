@@ -7,6 +7,10 @@ $(function () {
   var manager = new Manager();
   var el = $('.content')[0];
 
+  manager.onChange = function () {
+    console.log('manager on change');
+  };
+
   var wm = new ReactWM(manager, el);
 
   manager.add({id: 'settings', x: 20, y: 20, width: 200, height: 420, title: 'Settings'});

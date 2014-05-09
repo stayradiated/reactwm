@@ -1,4 +1,5 @@
 var assert = require('chai').assert;
+var sinon = require('sinon');
 var Window = require('../../source/models/window');
 
 describe('window', function () {
@@ -77,28 +78,28 @@ describe('window', function () {
     describe('left', function () {
       it('in', function () {
         window.resize(-change, 0, true, false);
-        assert.equal(window.x, start + change);
-        assert.equal(window.width, start - change);
+        assert.equal(window.x, start - change);
+        assert.equal(window.width, start + change);
       });
 
       it('out', function () {
         window.resize(change, 0, true, false);
-        assert.equal(window.x, start - change);
-        assert.equal(window.width, start + change);
+        assert.equal(window.x, start + change);
+        assert.equal(window.width, start - change);
       });
     });
 
     describe('top', function () {
       it('in', function () {
         window.resize(0, -change, false, true);
-        assert.equal(window.y, start + change);
-        assert.equal(window.height, start - change);
+        assert.equal(window.y, start - change);
+        assert.equal(window.height, start + change);
       });
 
       it('out', function () {
         window.resize(0, +change, false, true);
-        assert.equal(window.y, start - change);
-        assert.equal(window.height, start + change);
+        assert.equal(window.y, start + change);
+        assert.equal(window.height, start - change);
       });
     });
 
@@ -106,13 +107,13 @@ describe('window', function () {
       it('in', function () {
         window.resize(-change, 0, false, false);
         assert.equal(window.x, start);
-        assert.equal(window.width, start + change);
+        assert.equal(window.width, start - change);
       });
 
       it('out', function () {
         window.resize(change, 0, false, false);
         assert.equal(window.x, start);
-        assert.equal(window.width, start - change);
+        assert.equal(window.width, start + change);
       });
     });
 
@@ -120,13 +121,13 @@ describe('window', function () {
       it('in', function () {
         window.resize(0, -change, false, false);
         assert.equal(window.y, start);
-        assert.equal(window.height, start + change);
+        assert.equal(window.height, start - change);
       });
 
       it('out', function () {
         window.resize(0, change, false, false);
         assert.equal(window.y, start);
-        assert.equal(window.height, start - change);
+        assert.equal(window.height, start + change);
       });
     });
 
@@ -182,6 +183,42 @@ describe('window', function () {
 
       var window = new Window(props);
       assert.deepEqual(window.toJSON(), props);
+    });
+
+  });
+
+  describe('.onChange', function () {
+
+    it('should trigger on move', function () {
+      var window = new Window();
+      window.onChange = sinon.spy();
+
+      window.move(0, 0);
+      assert(window.onChange.calledOnce);
+    });
+
+    it('should trigger on resize', function () {
+      var window = new Window();
+      window.onChange = sinon.spy();
+
+      window.resize(0, 0, false, false);
+      assert(window.onChange.calledOnce);
+    });
+
+    it('should trigger on close', function () {
+      var window =  new Window();
+      window.onChange = sinon.spy();
+
+      window.close();
+      assert(window.onChange.calledOnce);
+    });
+
+    it('should trigger on rename', function () {
+      var window = new Window();
+      window.onChange = sinon.spy();
+
+      window.rename('new name');
+      assert(window.onChange.calledOnce);
     });
 
   });

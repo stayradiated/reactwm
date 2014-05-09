@@ -105,7 +105,6 @@ var Window = React.createClass({
 
   close: function () {
     this.props.window.close();
-    this.props.onClose();
   },
 
   render: function () {
