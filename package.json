@@ -33,6 +33,7 @@
   "dependencies": {
     "jquery": "^2.1.1",
     "react": "^0.10.0",
-    "lodash": "^2.4.1"
+    "lodash": "^2.4.1",
+    "signals": "git://github.com/stayradiated/signals.git"
   }
 }

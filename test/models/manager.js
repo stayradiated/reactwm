@@ -127,4 +127,7 @@ describe('manager', function () {
 
   });
 
+  describe('events', function () {
+  });
+
 });

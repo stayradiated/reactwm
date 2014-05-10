@@ -1,16 +1,18 @@
 var _ = require('lodash');
+var signals = require('signals');
 
-var NULL = 0;
+var INACTIVE = 0;
 var MOVE = 1;
 var RESIZE = 2;
 
 var Window = function (props) {
+  signals.convert(this);
+
   _.extend(this, _.defaults(props || {}, this.defaults));
+  this.mode = INACTIVE;
 };
 
 _.extend(Window.prototype, {
-
-  onChange: _.noop,
 
 
   /**
@@ -34,13 +36,15 @@ _.extend(Window.prototype, {
   setPosition: function (x, y) {
     this.x = x;
     this.y = y;
-    this.onChange();
+    this.emit('change:position');
+    this.emit('change');
   },
 
   setSize: function (width, height) {
     this.width = width;
     this.height = height;
-    this.onChange();
+    this.emit('change:size');
+    this.emit('change');
   },
 
 
@@ -57,7 +61,7 @@ _.extend(Window.prototype, {
   },
 
   startMove: function (x, y) {
-    this._mode = MOVE;
+    this.mode = MOVE;
     this._offsetX = x - this.x;
     this._offsetY = y - this.y;
     this._realX = this.x;
@@ -65,10 +69,13 @@ _.extend(Window.prototype, {
   },
 
   endMove: function () {
+    delete this._offsetX;
+    delete this._offsetY;
     delete this._realX;
     delete this._realY;
-    this._mode = NULL;
-    this.onChange();
+    this.mode = INACTIVE;
+    this.emit('change:position');
+    this.emit('change');
   },
 
 
@@ -84,16 +91,22 @@ _.extend(Window.prototype, {
     var deltaX = x - this._originX;
     var deltaY = y - this._originY;
 
-    var finalWidth = this._startWidth + (this._quad.left ? deltaX * -1 : deltaX); 
+    var finalWidth = this._startWidth + (this._quad.left ? deltaX * -1 : deltaX);
     var finalHeight = this._startHeight + (this._quad.top ? deltaY * -1 : deltaY);
 
-    if (finalWidth > this.maxWidth || finalWidth < this.minWidth) {
+    if (finalWidth > this.maxWidth ) {
       deltaX = this.maxWidth - this._startWidth;
+      if (this._quad.left) deltaX *= -1;
+    } else if (finalWidth < this.minWidth) {
+      deltaX = this.minWidth - this._startWidth;
       if (this._quad.left) deltaX *= -1;
     }
 
-    if (finalHeight > this.maxHeight || finalHeight < this.minHeight) {
+    if (finalHeight > this.maxHeight) {
       deltaY = this.maxHeight - this._startHeight;
+      if (this._quad.top) deltaY *= -1;
+    } else if (finalHeight < this.minHeight) {
+      deltaY = this.minHeight - this._startHeight;
       if (this._quad.top) deltaY *= -1;
     }
 
@@ -113,7 +126,7 @@ _.extend(Window.prototype, {
   },
 
   startResize: function (x, y) {
-    this._mode = RESIZE;
+    this.mode = RESIZE;
     this._quad = this.quadrant(x, y);
     this._startX = this.x;
     this._startY = this.y;
@@ -127,12 +140,18 @@ _.extend(Window.prototype, {
 
   endResize: function () {
     delete this._quad;
+    delete this._startX;
+    delete this._startY;
+    delete this._startWidth;
+    delete this._startHeight;
     delete this._realX;
     delete this._realY;
     delete this._originX;
     delete this._originY;
-    this._mode = NULL;
-    this.onChange();
+    this.mode = INACTIVE;
+    this.emit('change:position');
+    this.emit('change:size');
+    this.emit('change');
   },
 
 
@@ -167,7 +186,8 @@ _.extend(Window.prototype, {
   close: function () {
     this.open = false;
     if (this.manager) this.manager.remove(this);
-    this.onChange();
+    this.emit('change:open');
+    this.emit('change');
   },
 
 
@@ -187,7 +207,8 @@ _.extend(Window.prototype, {
 
   rename: function (title) {
     this.title = title;
-    this.onChange();
+    this.emit('change:title');
+    this.emit('change');
   },
 
 

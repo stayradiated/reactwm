@@ -16,6 +16,7 @@ var Window = React.createClass({
 
   componentWillMount: function () {
     this.window = this.props.window;
+    this.window.on('change', this.forceUpdate, this);
     $(document).on('mousemove', this.handleMouseMove);
     $(document).on('mouseup', this.handleMouseUp);
   },
@@ -27,14 +28,7 @@ var Window = React.createClass({
     };
   },
 
-  getInitialState: function () {
-    return {
-      mode: INACTIVE
-    };
-  },
-
   handleMouseDownWithKey: function (e) {
-    console.log('HandleMouseDownWithKey');
     e.preventDefault();
     if (!(e.ctrlKey || e.metaKey || e.altKey || e.button !== 0)) return false;
     this.handleMouseDown(e);
@@ -42,64 +36,41 @@ var Window = React.createClass({
   },
 
   handleMouseDown: function (e) {
-    console.log('handleMouseDown');
     var mouse = this.props.parent.convertPoints(e);
     if (e.button === 0) { this.startMove(mouse); }
     else { this.startResize(mouse); }
   },
 
   startMove: function (mouse) {
-    this.props.window.startMove(mouse.x, mouse.y);
-
-    this.setState({
-      mode: MOVE
-    });
-
-    // TODO: Maybe we won't need this? e.g. listen to the model instead
-    this.props.onStartMove();
+    this.window.startMove(mouse.x, mouse.y);
   },
 
   startResize: function (mouse) {
-    console.log('>> starting resize');
-    this.props.window.startResize(mouse.x, mouse.y);
-
-    this.setState({
-      mode: RESIZE
-    });
-
-    this.props.onStartMove(this.window);
+    this.window.startResize(mouse.x, mouse.y);
   },
 
   handleMouseMove: function (e) {
-    if (this.state.mode == INACTIVE) return true;
+    if (this.window.mode == INACTIVE) return true;
     var mouse = this.props.parent.convertPoints(e);
 
-    switch (this.state.mode) {
-      case MOVE:
-        this.window.move(mouse.x, mouse.y);
-        break;
-      case RESIZE:
-        this.window.resize(mouse.x, mouse.y);
-        break;
-    }
+    if (this.window.mode === MOVE) this.window.move(mouse.x, mouse.y);
+    else if (this.window.mode === RESIZE) this.window.resize(mouse.x, mouse.y);
 
     this.forceUpdate();
   },
 
   handleMouseUp: function () {
-    if (this.state.mode === INACTIVE) return true;
-    if (this.state.mode == MOVE) this.props.window.endMove();
-    else if (this.state.mode == RESIZE) this.props.window.endResize();
-    this.setState({ mode: INACTIVE });
-    this.props.onEndMove();
+    if (this.window.mode === INACTIVE) return true;
+    if (this.window.mode == MOVE) this.window.endMove();
+    else if (this.window.mode == RESIZE) this.window.endResize();
   },
 
   focus: function () {
-    this.props.window.requestFocus();
+    this.window.requestFocus();
   },
 
   close: function () {
-    this.props.window.close();
+    this.window.close();
   },
 
   render: function () {
@@ -108,23 +79,20 @@ var Window = React.createClass({
       active: this.props.active
     });
 
-    var position = {
+    var styles = {
       top: this.window.y,
-      left: this.window.x
-    };
-
-    var size = {
+      left: this.window.x,
       width: this.window.width,
       height: this.window.height
     };
 
     return (
-      <div className={classes} style={position} onMouseDown={this.handleMouseDown}>
+      <div className={classes} style={styles} onMouseDown={this.handleMouseDown}>
         <header>
           <div className="title">{this.window.title}</div>
-          <div className="close" onMouseDown={this.ignore} onClick={this.close}></div>
+          <div className="close" onMouseDown={this.ignore} onClick={this.close} />
         </header>
-        <div className='content' onMouseDown={this.handleMouseDownWithKey} style={size}></div>
+        <div className='content' onMouseDown={this.handleMouseDownWithKey} />
       </div>
     );
   }

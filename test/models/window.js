@@ -216,43 +216,46 @@ describe('window', function () {
 
   describe('.onChange', function () {
 
-    var window;
+    var window, spy;
 
     beforeEach(function () {
       window = new Window();
-      window.onChange = sinon.spy();
-    });
-
-    afterEach(function () {
-      assert(window.onChange.calledOnce);
+      spy = sinon.spy();
+      window.on('change', spy);
     });
 
     it('should trigger on setSize', function () {
       window.setSize();
+      assert(spy.calledOnce);
     });
 
     it('should trigger on setPosition', function () {
       window.setPosition();
+      assert(spy.calledOnce);
     });
 
     it('should trigger on move', function () {
       window.startMove();
       window.move(0, 0);
       window.endMove();
+      assert(spy.calledOnce);
     });
 
     it('should trigger on resize', function () {
       window.startResize(0, 0);
       window.resize(0, 0);
-      window.endMove();
+      window.endResize();
+      assert(spy.calledOnce);
     });
 
     it('should trigger on close', function () {
       window.close();
+      assert(spy.calledOnce);
     });
 
     it('should trigger on rename', function () {
       window.rename('new name');
+      assert(spy.calledOnce);
     });
 
   });

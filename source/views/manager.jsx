@@ -9,19 +9,19 @@ var PADDING = 20;
 
 var Manager = React.createClass({
 
+  componentWillMount: function () {
+    this.manager = this.props.manager;
+    this.manager.on('change', this.forceUpdate, this);
+  },
+
   componentDidMount: function () {
     var el = $(this.getDOMNode());
-    el.on('contextmenu', this.disableContextMenu);
-
-    this.setState({
-      offset: el.offset()
-    });
+    el.on('contextmenu', this.ignore);
+    this.setState({ offset: el.offset() });
   },
 
   getInitialState: function () {
     return {
-      active: false,
-      guides: {},
       offset: {
         top: 0,
         left: 0
@@ -29,21 +29,16 @@ var Manager = React.createClass({
     };
   },
 
-  disableContextMenu: function (e) {
+  ignore: function (e) {
     e.preventDefault();
     return false;
   },
 
   handleStartMove: function (window) {
     this.props.manager.bringToFront(window);
-    this.setState({
-      active: window,
-      // guides: this.props.manager.guides(window)
-    });
   },
 
   handleEndMove: function (window) {
-    this.setState({ guides: {} });
   },
 
   convertPoints: function (e) {
@@ -56,21 +51,13 @@ var Manager = React.createClass({
   render: function () {
 
     var windows = this.props.manager.map(function (window) {
-      return <Window
-        key={window.id}
-        parent={this}
-        window={window}
-        guides={this.state.guides}
-        onStartMove={this.handleStartMove.bind(this, window)}
-        onEndMove={this.handleEndMove.bind(this, window)} />;
+      return <Window key={window.id} parent={this} window={window} />;
     }, this);
 
     return (
-      <div className="window-manager"
-        onMouseMove={this.handleMouseMove}
-        onMouseUp={this.handleMouseUp}>
-          <Guides guides={this.state.guides} />
-          <div className="windows">{windows}</div>
+      <div className="window-manager">
+        <Guides guides={this.state.guides} />
+        <div className="windows">{windows}</div>
       </div>
     );
   }

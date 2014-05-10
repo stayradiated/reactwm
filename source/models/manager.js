@@ -1,14 +1,18 @@
 var _ = require('lodash');
+var signals = require('signals');
 var Window = require('./window');
 var Guides = require('./guides');
 
 var Manager = function () {
+  signals.convert(this);
+
+  this.active = null;
   this.windows = [];
+  this.guides = new Guides(this);
+
 };
 
 _.extend(Manager.prototype, {
-
-  onChange: _.noop,
 
 
   /**
@@ -45,7 +49,8 @@ _.extend(Manager.prototype, {
     if (!(window instanceof Window)) window = new Window(window);
     window.manager = this;
     this.windows.push(window);
-    this.onChange();
+    this.emit('add', window);
+    this.emit('change');
   },
 
 
@@ -59,7 +64,8 @@ _.extend(Manager.prototype, {
     var index = this.windows.indexOf(window);
     if (index > -1) {
       this.windows.splice(index, 1);
-      this.onChange();
+      this.emit('remove', window);
+      this.emit('change');
     }
   },
 
@@ -85,7 +91,7 @@ _.extend(Manager.prototype, {
     if (index > -1) {
       this.windows.splice(index, 1);
       this.windows.push(window);
-      this.onChange();
+      this.emit('change');
     }
   },
 

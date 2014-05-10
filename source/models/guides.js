@@ -1,70 +1,51 @@
 var _ = require('lodash');
 
-var Guides = function () {
-  this.guides = [];
+var GAP = 20;
+var SNAP = 5;
+
+var Guides = function (manager) {
+  this.manager = manager;
+  this.vertical = [];
+  this.horizontal = [];
+
+  this.manager.on('change', this.generate, this); 
 };
 
 _.extend(Guides.prototype, {
 
-  margin: 5,
-
-  add: function () {
-    this.guides.push.apply(this.guides, arguments);
-  },
-
-  snap: function (value) {
+  snap: function (orientation, value) {
+    var guides = this[orientation];
     for (var i = 0, len = guides.length; i < len; i++) {
       var guide = guides[i];
-
-      if (value >= guide - this.margin && value <= guide + this.margin) {
+      if (value >= guide - SNAP && value <= guide + SNAP) {
         return guide;
       }
     }
-
     return value;
   },
 
-  clean: function () {
-    this.guides = _.chain(this.guides).sort().uniq(true).value();
-  },
+  generate: function () {
+    this.manager.forEach(function (window) {
+      if (this.manager.active === window) return;
 
-  forEach: function (iterator, context) {
-    return this.guides.forEach(iterator, context);
-  },
-
-  map: function (iterator, context) {
-    return this.guides.map(iterator, context);
-  },
-
-  generate: function (manager, ignore) {
-    var guides = {
-      vertical: new Guides(),
-      horizontal: new Guides()
-    };
-
-    manager.forEach(function (window) {
-      if (window === ignore) return;
-
-      guides.vertical.add(
+      this.vertical.push(
         window.x,
         window.x + window.width,
-        window.x - this.guidePadding,
-        window.x + window.width + this.guidePadding
+        window.x - GAP,
+        window.x + window.width + GAP
       );
-      guides.horizontal.add(
+
+      this.horizontal.push(
         window.y,
         window.y + window.height,
-        window.y - this.guidePadding,
-        window.y + window.height + this.guidePadding
+        window.y - GAP,
+        window.y + window.height + GAP
       );
     }, this);
 
-    guides.vertical.clean();
-    guides.horizontal.clean();
-
-    return guides;
-  },
-
+    this.vertical = _(this.vertical).sortBy().uniq(true).value();
+    this.horizontal = _(this.horizontal).sortBy().uniq(true).value();
+  }
 
 });
 

@@ -87,6 +87,9 @@ body {
   .content {
     background: #fff;
     border-radius: 2px;
+    position: absolute;
+    top: 25px; bottom: 3px;
+    left: 3px; right: 3px;
   }
 
 }
