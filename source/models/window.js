@@ -72,31 +72,31 @@ _.extend(Window.prototype, {
     var deltaX = x - this._originX;
     var deltaY = y - this._originY;
 
-    console.log(deltaX, deltaY);
-
-    var finalWidth = this.width + (this._quad.left ? deltaX * -1 : deltaX); 
-    var finalHeight = this.height + (this._quad.top ? deltaY * -1 : deltaY);
+    var finalWidth = this._startWidth + (this._quad.left ? deltaX * -1 : deltaX); 
+    var finalHeight = this._startHeight + (this._quad.top ? deltaY * -1 : deltaY);
 
     if (finalWidth > this.maxWidth || finalWidth < this.minWidth) {
-      deltaX = 0;
+      deltaX = this.maxWidth - this._startWidth;
+      if (this._quad.left) deltaX *= -1;
     }
 
     if (finalHeight > this.maxHeight || finalHeight < this.minHeight) {
-      deltaY = 0;
+      deltaY = this.maxHeight - this._startHeight;
+      if (this._quad.top) deltaY *= -1;
     }
 
     if (this._quad.left) {
-      this.x += deltaX;
-      this.width -= deltaX;
+      this.x = this._startX + deltaX;
+      this.width = this._startWidth - deltaX;
     } else {
-      this.width += deltaX;
+      this.width = this._startWidth + deltaX;
     }
 
     if (this._quad.top) {
-      this.y += deltaY;
-      this.height -= deltaY;
+      this.y = this._startY + deltaY;
+      this.height = this._startHeight - deltaY;
     } else {
-      this.height += deltaY;
+      this.height = this._startHeight + deltaY;
     }
   },
 
@@ -104,6 +104,10 @@ _.extend(Window.prototype, {
     console.log('starting resize');
     this._mode = RESIZE;
     this._quad = this.quadrant(x, y);
+    this._startX = this.x;
+    this._startY = this.y;
+    this._startWidth = this.width;
+    this._startHeight = this.height;
     this._originX = x;
     this._originY = y;
     this._realX = this.x;
