@@ -1,5 +1,9 @@
 var _ = require('lodash');
 
+var NULL = 0;
+var MOVE = 1;
+var RESIZE = 2;
+
 var Window = function (props) {
   _.extend(this, _.defaults(props || {}, this.defaults));
 };
@@ -35,8 +39,23 @@ _.extend(Window.prototype, {
    */
 
   move: function (x, y) {
-    this.x = x;
-    this.y = y;
+    this._realX = x - this._offsetX;
+    this._realY = y - this._offsetY;
+    this.snap();
+  },
+
+  startMove: function (x, y) {
+    this._mode = MOVE;
+    this._offsetX = x - this.x;
+    this._offsetY = y - this.y;
+    this._realX = this.x;
+    this._realY = this.y;
+  },
+
+  endMove: function () {
+    delete this._realX;
+    delete this._realY;
+    this._mode = NULL;
     this.onChange();
   },
 
@@ -49,12 +68,14 @@ _.extend(Window.prototype, {
    * - isTop (bool) : true=top, false=bottom
    */
 
-  resize: function (deltaX, deltaY, isLeft, isTop) {
+  resize: function (x, y) {
+    var deltaX = x - this._originX;
+    var deltaY = y - this._originY;
 
-    console.log(this.width, deltaX, this.width + deltaX);
+    console.log(deltaX, deltaY);
 
-    var finalWidth = this.width + (isLeft ? deltaX * -1 : deltaX); 
-    var finalHeight = this.height + (isTop ? deltaY * -1 : deltaY);
+    var finalWidth = this.width + (this._quad.left ? deltaX * -1 : deltaX); 
+    var finalHeight = this.height + (this._quad.top ? deltaY * -1 : deltaY);
 
     if (finalWidth > this.maxWidth || finalWidth < this.minWidth) {
       deltaX = 0;
@@ -64,21 +85,50 @@ _.extend(Window.prototype, {
       deltaY = 0;
     }
 
-    if (isLeft) {
+    if (this._quad.left) {
       this.x += deltaX;
       this.width -= deltaX;
     } else {
       this.width += deltaX;
     }
 
-    if (isTop) {
+    if (this._quad.top) {
       this.y += deltaY;
       this.height -= deltaY;
     } else {
       this.height += deltaY;
     }
+  },
 
+  startResize: function (x, y) {
+    console.log('starting resize');
+    this._mode = RESIZE;
+    this._quad = this.quadrant(x, y);
+    this._originX = x;
+    this._originY = y;
+    this._realX = this.x;
+    this._realY = this.y;
+  },
+
+  endResize: function () {
+    console.log('ending resize');
+    delete this._quad;
+    delete this._realX;
+    delete this._realY;
+    delete this._originX;
+    delete this._originY;
+    this._mode = NULL;
     this.onChange();
+  },
+
+
+  /**
+   * snap the window to some guidelines
+   */
+
+  snap: function () {
+    this.x = this._realX;
+    this.y = this._realY;
   },
 
 

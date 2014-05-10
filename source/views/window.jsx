@@ -29,45 +29,42 @@ var Window = React.createClass({
 
   getInitialState: function () {
     return {
-      mode: INACTIVE,
-      offset: {
-        x: 0,
-        y: 0
-      }
+      mode: INACTIVE
     };
   },
 
   handleMouseDownWithKey: function (e) {
-    if (!(e.ctrlKey || e.metaKey || e.altKey || e.button !== 0)) return this.ignore(e);
+    console.log('HandleMouseDownWithKey');
+    e.preventDefault();
+    if (!(e.ctrlKey || e.metaKey || e.altKey || e.button !== 0)) return false;
     this.handleMouseDown(e);
+    return false;
   },
 
   handleMouseDown: function (e) {
+    console.log('handleMouseDown');
     var mouse = this.props.parent.convertPoints(e);
     if (e.button === 0) { this.startMove(mouse); }
     else { this.startResize(mouse); }
   },
 
   startMove: function (mouse) {
+    this.props.window.startMove(mouse.x, mouse.y);
+
     this.setState({
-      mode: MOVE,
-      offset: {
-        x: mouse.x - this.window.x,
-        y: mouse.y - this.window.y
-      }
+      mode: MOVE
     });
 
+    // TODO: Maybe we won't need this? e.g. listen to the model instead
     this.props.onStartMove();
   },
 
   startResize: function (mouse) {
+    console.log('>> starting resize');
+    this.props.window.startResize(mouse.x, mouse.y);
+
     this.setState({
-      mode: RESIZE,
-      offset: {
-        x: mouse.x,
-        y: mouse.y,
-      },
-      quadrant: this.window.quadrant(mouse.x, mouse.y)
+      mode: RESIZE
     });
 
     this.props.onStartMove(this.window);
@@ -79,23 +76,21 @@ var Window = React.createClass({
 
     switch (this.state.mode) {
       case MOVE:
-        this.window.move(mouse.x - this.state.offset.x, mouse.y - this.state.offset.y);
-        this.forceUpdate();
+        this.window.move(mouse.x, mouse.y);
         break;
       case RESIZE:
-        var delta = {
-          x: mouse.x - this.state.offset.x,
-          y: mouse.y - this.state.offset.y
-        };
-        this.window.resize(delta.x, delta.y, this.state.quadrant.left, this.state.quadrant.top);
-        this.setState({ offset: mouse });
+        this.window.resize(mouse.x, mouse.y);
         break;
     }
+
+    this.forceUpdate();
   },
 
   handleMouseUp: function () {
     if (this.state.mode === INACTIVE) return true;
-    this.setState({ mode: INACTIVE, quadrant: undefined });
+    if (this.state.mode == MOVE) this.props.window.endMove();
+    else if (this.state.mode == RESIZE) this.props.window.endResize();
+    this.setState({ mode: INACTIVE });
     this.props.onEndMove();
   },
 
