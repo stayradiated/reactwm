@@ -31,6 +31,18 @@ _.extend(Window.prototype, {
     open: true
   },
 
+  setPosition: function (x, y) {
+    this.x = x;
+    this.y = y;
+    this.onChange();
+  },
+
+  setSize: function (width, height) {
+    this.width = width;
+    this.height = height;
+    this.onChange();
+  },
+
 
   /**
    * move the window to a point
@@ -101,7 +113,6 @@ _.extend(Window.prototype, {
   },
 
   startResize: function (x, y) {
-    console.log('starting resize');
     this._mode = RESIZE;
     this._quad = this.quadrant(x, y);
     this._startX = this.x;
@@ -115,7 +126,6 @@ _.extend(Window.prototype, {
   },
 
   endResize: function () {
-    console.log('ending resize');
     delete this._quad;
     delete this._realX;
     delete this._realY;
@@ -187,13 +197,17 @@ _.extend(Window.prototype, {
 
   toJSON: function () {
     return {
-      id:      this.id,
-      x:       this.x,
-      y:       this.y,
-      width:   this.width,
-      height:  this.height,
-      title:   this.title,
-      open:    this.open
+      id:         this.id,
+      x:          this.x,
+      y:          this.y,
+      width:      this.width,
+      height:     this.height,
+      maxWidth:   this.maxWidth,
+      minWidth:   this.minWidth,
+      maxHeight:  this.maxHeight,
+      minHeight:  this.minHeight,
+      title:      this.title,
+      open:       this.open
     };
   }
 

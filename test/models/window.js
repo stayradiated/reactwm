@@ -23,12 +23,16 @@ describe('window', function () {
       assert.equal(window.x, 0);
       assert.equal(window.y, 0);
 
+      window.startMove(0, 0);
+
       var x = 200;
       var y = 300;
 
       window.move(x, y);
       assert.equal(window.x, x);
       assert.equal(window.y, y);
+
+      window.endMove();
     });
 
   });
@@ -70,62 +74,85 @@ describe('window', function () {
     var change = 20;
 
     beforeEach(function () {
-      window.move(start, start);
-      window.width = start;
-      window.height = start;
+      window.setPosition(start, start);
+      window.setSize(start, start);
+    });
+
+    afterEach(function () {
+      window.endResize();
     });
 
     describe('left', function () {
+
+      beforeEach(function () {
+        window.startResize(start, 0);
+      });
+
       it('in', function () {
-        window.resize(-change, 0, true, false);
+        window.resize(start - change, 0);
         assert.equal(window.x, start - change);
         assert.equal(window.width, start + change);
       });
 
       it('out', function () {
-        window.resize(change, 0, true, false);
+        window.resize(start + change, 0);
         assert.equal(window.x, start + change);
         assert.equal(window.width, start - change);
       });
     });
 
     describe('top', function () {
+
+      beforeEach(function () {
+        window.startResize(0, start);
+      });
+
       it('in', function () {
-        window.resize(0, -change, false, true);
+        window.resize(0, start - change);
         assert.equal(window.y, start - change);
         assert.equal(window.height, start + change);
       });
 
       it('out', function () {
-        window.resize(0, +change, false, true);
+        window.resize(0, start + change);
         assert.equal(window.y, start + change);
         assert.equal(window.height, start - change);
       });
     });
 
     describe('right', function () {
+
+      beforeEach(function () {
+        window.startResize(start * 2, 0);
+      });
+
       it('in', function () {
-        window.resize(-change, 0, false, false);
+        window.resize(start * 2 - change, 0);
         assert.equal(window.x, start);
         assert.equal(window.width, start - change);
       });
 
       it('out', function () {
-        window.resize(change, 0, false, false);
+        window.resize(start * 2 + change, 0);
         assert.equal(window.x, start);
         assert.equal(window.width, start + change);
       });
     });
 
     describe('bottom', function () {
+
+      beforeEach(function () {
+        window.startResize(0, start * 2);
+      });
+
       it('in', function () {
-        window.resize(0, -change, false, false);
+        window.resize(0, start * 2 - change);
         assert.equal(window.y, start);
         assert.equal(window.height, start - change);
       });
 
       it('out', function () {
-        window.resize(0, change, false, false);
+        window.resize(0, start * 2 + change);
         assert.equal(window.y, start);
         assert.equal(window.height, start + change);
       });
@@ -189,36 +216,43 @@ describe('window', function () {
 
   describe('.onChange', function () {
 
-    it('should trigger on move', function () {
-      var window = new Window();
-      window.onChange = sinon.spy();
+    var window;
 
-      window.move(0, 0);
+    beforeEach(function () {
+      window = new Window();
+      window.onChange = sinon.spy();
+    });
+
+    afterEach(function () {
       assert(window.onChange.calledOnce);
+    });
+
+    it('should trigger on setSize', function () {
+      window.setSize();
+    });
+
+    it('should trigger on setPosition', function () {
+      window.setPosition();
+    });
+
+    it('should trigger on move', function () {
+      window.startMove();
+      window.move(0, 0);
+      window.endMove();
     });
 
     it('should trigger on resize', function () {
-      var window = new Window();
-      window.onChange = sinon.spy();
-
-      window.resize(0, 0, false, false);
-      assert(window.onChange.calledOnce);
+      window.startResize(0, 0);
+      window.resize(0, 0);
+      window.endMove();
     });
 
     it('should trigger on close', function () {
-      var window =  new Window();
-      window.onChange = sinon.spy();
-
       window.close();
-      assert(window.onChange.calledOnce);
     });
 
     it('should trigger on rename', function () {
-      var window = new Window();
-      window.onChange = sinon.spy();
-
       window.rename('new name');
-      assert(window.onChange.calledOnce);
     });
 
   });
