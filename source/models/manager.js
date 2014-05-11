@@ -3,16 +3,35 @@ var signals = require('signals');
 var Window = require('./window');
 var Guides = require('./guides');
 
-var Manager = function () {
+var Manager = function (windows) {
   signals.convert(this);
 
   this.active = null;
   this.windows = {};
   this.order = [];
   this.guides = new Guides(this);
+
+  if (_.isArray(windows)) {
+    windows.forEach(function (window) {
+      this.add(window);
+    }, this);
+  }
 };
 
 _.extend(Manager.prototype, {
+
+  /**
+   * setup the components
+   */
+
+  setup: function (iterator, context) {
+    context = context || this;
+    this.forEach(function (window) {
+      console.log('window', window);
+      window.content = iterator.call(context, window);
+    });
+    this.emit('change');
+  },
 
 
   /**
@@ -56,11 +75,17 @@ _.extend(Manager.prototype, {
     if (!(window instanceof Window)) window = new Window(window);
     window.manager = this;
 
+    console.log('adding window', window);
+
     this.windows[window.id] = window;
     this.order.push(window.id);
 
     window.on('change:open', function () {
       this.emit('change');
+    }, this);
+
+    window.on('change', function () {
+      this.emit('change:windows');
     }, this);
 
     this.emit('add', window);

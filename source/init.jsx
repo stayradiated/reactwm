@@ -34,7 +34,22 @@ var Settings = React.createClass({
 
 $(function () {
 
-  var manager = new ManagerModel();
+  var data = localStorage.windows ? JSON.parse(localStorage.windows) : [];
+
+  var manager = new ManagerModel(data);
+
+  manager.setup(function (window) {
+    console.log(window);
+    return <Settings />;
+  });
+
+  var save = function () {
+    console.log('save');
+    localStorage.windows = manager.toString();
+  };
+
+  manager.on('change', save);
+  manager.on('change:windows', save);
 
   React.renderComponent((
     <ManagerView manager={manager} />
@@ -42,6 +57,7 @@ $(function () {
 
   var settings1 = manager.open(<Settings />, {
     id: 'settings-1',
+    title: 'Settings 1',
     width: 300,
     height: 300,
     x: 200,
@@ -50,6 +66,7 @@ $(function () {
 
   var settings2 = manager.open(<Settings />, {
     id: 'settings-2',
+    title: 'Settings 2',
     width: 300,
     height: 300,
     x: 600,
@@ -61,6 +78,7 @@ $(function () {
   $('.add-window').on('click', function () {
     manager.open(<Settings />, { 
       id: 'settings-' + Date.now(),
+    title: 'Settings ' + Date.now(),
       width: 300,
       height: 300,
       x: 20,

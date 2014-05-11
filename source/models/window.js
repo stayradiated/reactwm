@@ -11,6 +11,10 @@ var Window = function (props) {
   _.extend(this, _.defaults(props || {}, this.defaults));
   this.mode = INACTIVE;
 
+  // JSON converts Infinity to null
+  if (this.maxWidth === null) this.maxWidth = Infinity;
+  if (this.maxHeight === null) this.maxHeight = Infinity;
+
   if (this.id === undefined) {
     throw new Error('All windows must have an id');
   }
