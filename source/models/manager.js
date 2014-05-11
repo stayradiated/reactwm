@@ -59,6 +59,10 @@ _.extend(Manager.prototype, {
     this.windows[window.id] = window;
     this.order.push(window.id);
 
+    window.on('change:open', function () {
+      this.emit('change');
+    }, this);
+
     this.emit('add', window);
     this.emit('change');
 
@@ -130,12 +134,29 @@ _.extend(Manager.prototype, {
 
     if (index < 0) {
       throw new Error('Can not bring to front a window it cannot find: ' + id);
+    } else if (index == this.length() - 1) {
+      // already at the end of the stack
+      return;
     }
 
     this.order.splice(index, 1);
     this.order.push(id);
 
     this.emit('change');
+  },
+
+
+  /**
+   * filter the windows
+   */
+
+  filter: function (predicate, context) {
+    context = context || this;
+    return this.order.filter(function (id) {
+      return predicate.call(context, this.windows[id]);
+    }, this).map(function (id) {
+      return this.windows[id];
+    }, this);
   },
 
 

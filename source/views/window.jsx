@@ -30,11 +30,13 @@ var Window = React.createClass({
 
   handlePropagation: function (e) {
     if (!(e.ctrlKey || e.metaKey || e.altKey || e.button !== 0)){
+      this.focus();
       e.stopPropagation();
     }
   },
 
   handleMouseDown: function (e) {
+    this.focus();
     var mouse = this.props.parent.convertPoints(e);
     if (e.button === 0) { this.startMove(mouse); }
     else { this.startResize(mouse); }

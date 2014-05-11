@@ -50,7 +50,9 @@ var Manager = React.createClass({
 
   render: function () {
 
-    var windows = this.props.manager.map(function (window) {
+    var windows = this.props.manager.filter(function (window) {
+      return window.isOpen;
+    }).map(function (window) {
       return <Window key={window.id} parent={this} window={window} />;
     }, this);
 

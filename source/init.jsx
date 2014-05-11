@@ -13,7 +13,6 @@ var Settings = React.createClass({
     };
   },
   save: function () {
-    console.log('saving');
     this.setState({
       name: this.refs.name.getDOMNode().value
     });
@@ -41,12 +40,32 @@ $(function () {
     <ManagerView manager={manager} />
   ), $('.content')[0]);
 
-  manager.open(<Settings />, {
-    id: 'settings',
-    width: 200,
-    height: 200,
+  var settings1 = manager.open(<Settings />, {
+    id: 'settings-1',
+    width: 300,
+    height: 300,
     x: 200,
     y: 200
+  });
+
+  var settings2 = manager.open(<Settings />, {
+    id: 'settings-2',
+    width: 300,
+    height: 300,
+    x: 600,
+    y: 200
+  });
+
+  window.settings = [settings1, settings2];
+
+  $('.add-window').on('click', function () {
+    manager.open(<Settings />, { 
+      id: 'settings-' + Date.now(),
+      width: 300,
+      height: 300,
+      x: 20,
+      y: 20
+    });
   });
 
 });
