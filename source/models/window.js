@@ -10,6 +10,10 @@ var Window = function (props) {
 
   _.extend(this, _.defaults(props || {}, this.defaults));
   this.mode = INACTIVE;
+
+  if (this.id === undefined) {
+    throw new Error('All windows must have an id');
+  }
 };
 
 _.extend(Window.prototype, {
@@ -30,7 +34,7 @@ _.extend(Window.prototype, {
     maxHeight: Infinity,
     minHeight: 0,
     title: '',
-    open: true
+    isOpen: true
   },
 
   setPosition: function (x, y) {
@@ -180,12 +184,24 @@ _.extend(Window.prototype, {
 
 
   /**
+   * open the window
+   */
+
+  open: function () {
+    if (this.isOpen) return;
+    this.isOpen = true;
+    this.emit('change:open');
+    this.emit('change');
+  },
+
+
+  /**
    * close the window
    */
 
   close: function () {
-    this.open = false;
-    if (this.manager) this.manager.remove(this);
+    if (! this.isOpen) return;
+    this.isOpen = false;
     this.emit('change:open');
     this.emit('change');
   },
@@ -228,7 +244,7 @@ _.extend(Window.prototype, {
       maxHeight:  this.maxHeight,
       minHeight:  this.minHeight,
       title:      this.title,
-      open:       this.open
+      isOpen:     this.isOpen
     };
   }
 

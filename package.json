@@ -4,7 +4,7 @@
   "description": "A minimal window manager built using React",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -R spec test/*",
+    "test": "mocha -R spec test/* -b",
     "start": "gulp connect"
   },
   "repository": {

@@ -19,7 +19,7 @@ describe('window', function () {
   describe('.move', function () {
 
     it('should move the window to a point', function () {
-      var window = new Window();
+      var window = new Window({ id: 0 });
       assert.equal(window.x, 0);
       assert.equal(window.y, 0);
 
@@ -160,14 +160,17 @@ describe('window', function () {
 
   });
 
+  describe('.open', function () {
+  });
+
   describe('.close', function () {
 
     it('should close the window', function () {
-      var window = new Window();
-      assert.equal(window.open, true);
+      var window = new Window({ id: 0 });
+      assert.equal(window.isOpen, true);
 
       window.close();
-      assert.equal(window.open, false);
+      assert.equal(window.isOpen, false);
     });
 
   });
@@ -175,7 +178,7 @@ describe('window', function () {
   describe('.requestFocus', function () {
 
     it('should focus the window', function () {
-      var window = new Window();
+      var window = new Window({ id: 0 });
       window.requestFocus();
     });
 
@@ -184,7 +187,7 @@ describe('window', function () {
   describe('.rename', function () {
 
     it('should rename the window', function () {
-      var window = new Window();
+      var window = new Window({ id: 0 });
       assert.equal(window.title, '');
 
       var title = 'My custom window title';
@@ -205,7 +208,7 @@ describe('window', function () {
         width: 200,
         height: 400,
         title: 'Test',
-        open: true
+        isOpen: true
       };
 
       var window = new Window(props);
@@ -219,7 +222,7 @@ describe('window', function () {
     var window, spy;
 
     beforeEach(function () {
-      window = new Window();
+      window = new Window({ id: 0 });
       spy = sinon.spy();
       window.on('change', spy);
     });
@@ -248,7 +251,18 @@ describe('window', function () {
       assert(spy.calledOnce);
     });
 
+    it('should trigger on open', function () {
+      window.open();
+      assert(! spy.called);
+      window.close();
+      assert(spy.calledOnce);
+      window.open();
+      assert(spy.called);
+    });
+
     it('should trigger on close', function () {
+      window.close();
+      assert(spy.calledOnce);
       window.close();
       assert(spy.calledOnce);
     });

@@ -1,3 +1,4 @@
+var sinon = require('sinon');
 var assert = require('chai').assert;
 var Window = require('../../source/models/window');
 var Manager = require('../../source/models/manager');
@@ -10,30 +11,12 @@ describe('manager', function () {
     manager = new Manager();
   });
 
-  describe('.add', function () {
-
-    it('should add a window', function () {
-      var window = new Window();
-      manager.add(window);
-      assert.equal(manager.length(), 1);
-    });
-
-    it('should convert object to window instance', function () {
-      var window = { title: 'my title' };
-      manager.add(window);
-      assert.equal(manager.length(), 1);
-      assert(manager.at(0) instanceof Window);
-      assert.equal(manager.at(0).title, window.title);
-    });
-
-  });
-
   describe('.at', function () {
 
     it('should get a window by its index', function () {
-      var win1 = new Window();
-      var win2 = new Window();
-      var win3 = new Window();
+      var win1 = new Window({id: 1});
+      var win2 = new Window({id: 2});
+      var win3 = new Window({id: 3});
 
       manager.add(win1);
       manager.add(win2);
@@ -64,10 +47,43 @@ describe('manager', function () {
 
   });
 
+  describe('.has', function () {
+
+    it('should check if a window exists in the manager', function () {
+      var window = new Window({ id: 0 });
+
+      assert.isFalse(manager.has(window));
+      manager.add(window);
+      assert.isTrue(manager.has(window));
+    });
+
+  });
+
+  describe('.add', function () {
+
+    it('should add a window', function () {
+      var window = new Window({ id: 'a' });
+      assert.equal(manager.add(window), window);
+      assert.equal(manager.length(), 1);
+      assert.deepEqual(manager.order, ['a']);
+      assert.deepEqual(manager.windows, {a: window});
+    });
+
+    it('should convert object to window instance', function () {
+      var window = { id: 'custom', title: 'my title' };
+      window = manager.add(window);
+      assert(window instanceof Window);
+      assert.equal(manager.length(), 1);
+      assert.equal(manager.at(0), window);
+      assert.equal(manager.get('custom'), window);
+    });
+
+  });
+
   describe('.remove', function () {
 
     it('should remove a window', function () {
-      var window = new Window();
+      var window = new Window({ id: 0 });
       manager.add(window);
       assert.equal(manager.length(), 1);
       manager.remove(window);
@@ -84,26 +100,112 @@ describe('manager', function () {
 
   });
 
+  describe('.open', function () {
+
+    it('should only add a window once', function () {
+      var size = 10;
+      var component = '<div></div>';
+      var props = { id: 20, x: size, y: size, width: size, height: size };
+
+      var window = manager.open(component, props);
+
+      assert(manager.has(window));
+      assert.equal(manager.length(), 1);
+
+      assert.equal(manager.open(component,props), window);
+      assert.equal(manager.length(), 1);
+    });
+
+  });
+
   describe('.bringToFront', function () {
 
     it('should move a window to the end of the array', function () {
-      var win1 = new Window();
-      var win2 = new Window();
-      var win3 = new Window();
+      var win1 = new Window({ id: 1 });
+      var win2 = new Window({ id: 2 });
+      var win3 = new Window({ id: 3 });
 
       manager.add(win1);
       manager.add(win2);
       manager.add(win3);
-      assert.deepEqual(manager.windows, [win1, win2, win3]);
+      assert.deepEqual(manager.order, [1, 2, 3]);
 
       manager.bringToFront(win1);
-      assert.deepEqual(manager.windows, [win2, win3, win1]);
+      assert.deepEqual(manager.order, [2, 3, 1]);
 
       manager.bringToFront(win2);
-      assert.deepEqual(manager.windows, [win3, win1, win2]);
+      assert.deepEqual(manager.order, [3, 1, 2]);
 
       manager.bringToFront(win3);
-      assert.deepEqual(manager.windows, [win1, win2, win3]);
+      assert.deepEqual(manager.order, [1, 2, 3]);
+    });
+
+  });
+
+  describe('.forEach', function () {
+
+    it('should loop over each window in order', function () {
+      var win1 = new Window({ id: 1 });
+      var win2 = new Window({ id: 2 });
+      var win3 = new Window({ id: 3 });
+
+      manager.add(win1);
+      manager.add(win2);
+      manager.add(win3);
+
+      var spy = sinon.spy();
+
+      manager.forEach(spy);
+
+      assert.deepEqual(spy.args[0], [win1]);
+      assert.deepEqual(spy.args[1], [win2]);
+      assert.deepEqual(spy.args[2], [win3]);
+
+      assert.equal(spy.thisValues[0], manager);
+      assert.equal(spy.thisValues[1], manager);
+      assert.equal(spy.thisValues[2], manager);
+    });
+
+    it('should allow context to be set', function () {
+      var win1 = new Window({ id: 1 });
+      manager.add(win1);
+
+      var spy = sinon.spy();
+      manager.forEach(spy, win1);
+
+      assert(spy.calledOnce);
+      assert.deepEqual(spy.args[0], [win1]);
+      assert.equal(spy.thisValues[0], win1);
+    });
+
+  });
+
+  describe('.map', function () {
+
+    it('should transform the values', function () {
+      var win1 = new Window({ id: 1 });
+      var win2 = new Window({ id: 2 });
+      var win3 = new Window({ id: 3 });
+
+      manager.add(win1);
+      manager.add(win2);
+      manager.add(win3);
+
+      var spy = sinon.spy(function (win) {
+        return win.id;
+      });
+
+      var result = manager.map(spy);
+
+      assert.deepEqual(result, [1, 2, 3]);
+
+      assert.deepEqual(spy.args[0], [win1]);
+      assert.deepEqual(spy.args[1], [win2]);
+      assert.deepEqual(spy.args[2], [win3]);
+
+      assert.equal(spy.thisValues[0], manager);
+      assert.equal(spy.thisValues[1], manager);
+      assert.equal(spy.thisValues[2], manager);
     });
 
   });
@@ -118,7 +220,7 @@ describe('manager', function () {
         width: 100,
         height: 50,
         title: 'My amazing window',
-        open: true
+        isOpen: true
       };
 
       manager.add(props);

@@ -7,36 +7,43 @@ var Manager = function () {
   signals.convert(this);
 
   this.active = null;
-  this.windows = [];
+  this.windows = {};
+  this.order = [];
   this.guides = new Guides(this);
-
 };
 
 _.extend(Manager.prototype, {
 
 
   /**
-   * get a window at a specified index
-   * - i (int) : index
+   * get a window by it's position in the stack
+   * - index (int)
    */
 
-  at: function (i) {
-    return this.windows[i];
+  at: function (index) {
+    var id = this.order[index];
+    return this.windows[id];
   },
 
 
   /**
    * get a window by it's id
-   * - id (int) : window id
+   * - id (number|string) : window id
    */
 
   get: function (id) {
-    for (var i = 0, len = this.windows.length; i < len; i++) {
-      if (this.windows[i].id === id) {
-        return this.windows[i];
-      }
-    }
-    return undefined;
+    return this.windows[id];
+  },
+
+
+  /**
+   * check if a window exists in this manager
+   * - window (window|number|string)
+   */
+
+  has: function (window) {
+    var id = _.isObject(window) ? window.id : window;
+    return this.windows.hasOwnProperty(id);
   },
 
   
@@ -48,25 +55,57 @@ _.extend(Manager.prototype, {
   add: function (window) {
     if (!(window instanceof Window)) window = new Window(window);
     window.manager = this;
-    this.windows.push(window);
+
+    this.windows[window.id] = window;
+    this.order.push(window.id);
+
     this.emit('add', window);
     this.emit('change');
+
+    return window;
   },
 
 
   /**
    * remove a window
-   * - window (Window|int)
+   * - window (Window|number|string)
    */
 
   remove: function (window) {
-    if (!(window instanceof Window)) window = this.get(window);
-    var index = this.windows.indexOf(window);
-    if (index > -1) {
-      this.windows.splice(index, 1);
-      this.emit('remove', window);
-      this.emit('change');
+    var id = _.isObject(window) ? window.id : window;
+    window = this.get(id);
+
+    if (! window) {
+      throw new Error('Can not a window that it cannot find: ' + id);
     }
+
+    delete this.windows[id];
+    this.order.splice(this.order.indexOf(id), 1);
+
+    this.emit('remove', window);
+    this.emit('change');
+
+    return window;
+  },
+
+
+  /**
+   * open a window
+   * - component (React)
+   * - props (object)
+   */
+
+  open: function (component, props) {
+    if (! props || ! props.hasOwnProperty('id')) {
+      throw new Error('Must specify props.id');
+    }
+
+    props.content = component;
+
+    var window = this.has(props.id) ? this.get(props.id) : this.add(props);
+    window.open();
+
+    return window;
   },
 
   
@@ -76,41 +115,55 @@ _.extend(Manager.prototype, {
    */
 
   length: function () {
-    return this.windows.length;
+    return this.order.length;
   },
 
 
   /*
    * move a window to the end of the stack
-   * - window (Window|int)
+   * - window (Window|number|string)
    */
 
   bringToFront: function (window) {
-    if (!(window instanceof Window)) window = this.get(window);
-    var index = this.windows.indexOf(window);
-    if (index > -1) {
-      this.windows.splice(index, 1);
-      this.windows.push(window);
-      this.emit('change');
+    var id = _.isObject(window) ? window.id : window;
+    var index = this.order.indexOf(id);
+
+    if (index < 0) {
+      throw new Error('Can not bring to front a window it cannot find: ' + id);
     }
+
+    this.order.splice(index, 1);
+    this.order.push(id);
+
+    this.emit('change');
   },
 
 
   /*
    * loop through each window
+   * - iterator (function )
+   * - [context]
    */
 
   forEach: function (iterator, context) {
-    return this.windows.forEach(iterator, context);
+    context = context || this;
+    return this.order.forEach(function (id) {
+      return iterator.call(context, this.windows[id]);
+    }, this);
   },
 
 
   /*
    * map over each window
+   * - iterator (function )
+   * - [context]
    */
 
   map: function (iterator, context) {
-    return this.windows.map(iterator, context);
+    context = context || this;
+    return this.order.map(function (id) {
+      return iterator.call(context, this.windows[id]);
+    }, this);
   },
 
 
@@ -119,7 +172,7 @@ _.extend(Manager.prototype, {
    */
 
   toJSON: function () {
-    return _.map(this.windows, function (window) {
+    return this.map(function (window) {
       return window.toJSON();
     });
   },

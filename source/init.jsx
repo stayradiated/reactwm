@@ -1,7 +1,10 @@
 var $ = require('jquery');
 var React = require('react');
 
-var ReactWM = require('./views');
+// TODO: Figure out a sensible way to combine these into one class
+var ManagerView = require('./views/manager');
+var ManagerModel = require('./models/manager');
+
 
 var Settings = React.createClass({
   getInitialState: function () {
@@ -28,19 +31,22 @@ var Settings = React.createClass({
   }
 });
 
+
+
 $(function () {
 
+  var manager = new ManagerModel();
+
   React.renderComponent((
-    <ReactWM>
-      <div key='editor' title='Editor' x={20} y={290} width={300} height={200}>
-        <div>This is the editor</div>
-      </div>
-      <div key='vim' title='Vim' x={20} y={20} width={300} height={250}>
-        <div>This is vim</div>
-      </div>
-      <div key='settings' title='Settings' x={340} y={20} width={300} height={250}>
-        <Settings />
-      </div>
-    </ReactWM>
+    <ManagerView manager={manager} />
   ), $('.content')[0]);
+
+  manager.open(<Settings />, {
+    id: 'settings',
+    width: 200,
+    height: 200,
+    x: 200,
+    y: 200
+  });
+
 });
