@@ -18,7 +18,7 @@ gulp.task('scripts', function () {
   return browserify({
     extensions: ['.js', '.json', '.jsx']
   })
-  .add('./source/init.js')
+  .add('./source/init.jsx')
   .transform(reactify)
   .bundle()
   .on('error', console.log.bind(console))

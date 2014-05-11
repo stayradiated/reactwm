@@ -28,11 +28,10 @@ var Window = React.createClass({
     };
   },
 
-  handleMouseDownWithKey: function (e) {
-    e.preventDefault();
-    if (!(e.ctrlKey || e.metaKey || e.altKey || e.button !== 0)) return false;
-    this.handleMouseDown(e);
-    return false;
+  handlePropagation: function (e) {
+    if (!(e.ctrlKey || e.metaKey || e.altKey || e.button !== 0)){
+      e.stopPropagation();
+    }
   },
 
   handleMouseDown: function (e) {
@@ -92,7 +91,9 @@ var Window = React.createClass({
           <div className="title">{this.window.title}</div>
           <div className="close" onMouseDown={this.ignore} onClick={this.close} />
         </header>
-        <div className='content' onMouseDown={this.handleMouseDownWithKey} />
+        <div className='content' onMouseDown={this.handlePropagation}>
+          {this.window.content}
+        </div>
       </div>
     );
   }

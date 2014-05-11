@@ -1,17 +1,28 @@
 var _ = require('lodash');
 var React = require('react');
+var ManagerModel = require('../models/manager');
 var Manager = require('./manager');
 
-var ReactWM = function (manager, el) {
-  this.el = el;
-  this.manager = manager;
-  this.manager.on('change', this.render, this);
-};
+var ReactWM = React.createClass({
 
-_.extend(ReactWM.prototype, {
+  componentWillMount: function () {
+    this.manager = new ManagerModel();
+  },
 
   render: function () {
-    React.renderComponent(<Manager manager={this.manager} />, this.el);
+    React.Children.forEach(this.props.children, function (child) {
+      this.manager.add({
+        id: child.props.key,
+        x: child.props.x,
+        y: child.props.y,
+        width: child.props.width,
+        height: child.props.height,
+        title: child.props.title,
+        content: child
+      });
+    }, this);
+
+    return <Manager manager={this.manager}/>;
   }
 
 });
