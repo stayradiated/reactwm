@@ -56,7 +56,6 @@ body {
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.5);
   background: #2980b9;
   overflow: hidden;
-  padding: 3px;
   transition: box-shadow 0.15s ease;
 
   &.active {
@@ -64,17 +63,22 @@ body {
     box-shadow: 0 3px 20px 0 rgba(0, 0, 0, 0.6);
   }
 
+  $header_height: 30px;
+
   header {
+    line-height: $header_height;
+
     .title {
+      margin-left: $header_height / 4;
       float: left;
       color: #fff;
     }
 
     .close {
       float: right;
-      width: 12px;
-      height: 12px;
-      margin: 4px;
+      width: $header_height / 2;
+      height: $header_height / 2;
+      margin: $header_height / 4;
       background: rgba(0, 0, 0, 0.4);
 
       &:hover {
@@ -85,10 +89,13 @@ body {
   }
 
   .content {
+    $padding: 1px;
     background: #fff;
     position: absolute;
-    top: 25px; bottom: 3px;
-    left: 3px; right: 3px;
+    top: $header_height;
+    bottom: $padding;
+    left: $padding;
+    right: $padding;
   }
 
 }

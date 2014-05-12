@@ -30,7 +30,7 @@ gulp.task('example', ['example/scripts', 'example/stylesheets']);
 
 gulp.task('example/watch', ['example'], function () {
   gulp.watch('example/source/**/*', ['example/scripts']);
-  gulp.watch('example/stylesheets/**/*', ['example/scss']);
+  gulp.watch('example/*.scss', ['example/stylesheets']);
 });
 
 gulp.task('example/scripts', function () {
@@ -54,7 +54,7 @@ gulp.task('example/stylesheets', function () {
     .pipe(connect.reload());
 });
 
-gulp.task('example/connect', ['watch'], function () {
+gulp.task('example/connect', ['example/watch'], function () {
   return connect.server({
     root: ['example/dist'],
     port: 8000,

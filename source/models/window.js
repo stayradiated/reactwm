@@ -272,8 +272,7 @@ _.extend(Window.prototype, {
       maxHeight:  this.maxHeight,
       minHeight:  this.minHeight,
       title:      this.title,
-      isOpen:     this.isOpen,
-      active:     this.active
+      isOpen:     this.isOpen
     };
   }
 

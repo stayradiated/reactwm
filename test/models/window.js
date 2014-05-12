@@ -16,7 +16,7 @@ describe('window', function () {
     });
   });
 
-  describe('.move', function () {
+  describe('move', function () {
 
     it('should move the window to a point', function () {
       var window = new Window({ id: 0 });
@@ -28,11 +28,11 @@ describe('window', function () {
       var x = 200;
       var y = 300;
 
-      window.move(x, y);
+      window.update(x, y);
       assert.equal(window.x, x);
       assert.equal(window.y, y);
 
-      window.endMove();
+      window.endChange();
     });
 
   });
@@ -79,7 +79,7 @@ describe('window', function () {
     });
 
     afterEach(function () {
-      window.endResize();
+      window.endChange();
     });
 
     describe('left', function () {
@@ -89,13 +89,13 @@ describe('window', function () {
       });
 
       it('in', function () {
-        window.resize(start - change, 0);
+        window.update(start - change, 0);
         assert.equal(window.x, start - change);
         assert.equal(window.width, start + change);
       });
 
       it('out', function () {
-        window.resize(start + change, 0);
+        window.update(start + change, 0);
         assert.equal(window.x, start + change);
         assert.equal(window.width, start - change);
       });
@@ -108,13 +108,13 @@ describe('window', function () {
       });
 
       it('in', function () {
-        window.resize(0, start - change);
+        window.update(0, start - change);
         assert.equal(window.y, start - change);
         assert.equal(window.height, start + change);
       });
 
       it('out', function () {
-        window.resize(0, start + change);
+        window.update(0, start + change);
         assert.equal(window.y, start + change);
         assert.equal(window.height, start - change);
       });
@@ -127,13 +127,13 @@ describe('window', function () {
       });
 
       it('in', function () {
-        window.resize(start * 2 - change, 0);
+        window.update(start * 2 - change, 0);
         assert.equal(window.x, start);
         assert.equal(window.width, start - change);
       });
 
       it('out', function () {
-        window.resize(start * 2 + change, 0);
+        window.update(start * 2 + change, 0);
         assert.equal(window.x, start);
         assert.equal(window.width, start + change);
       });
@@ -146,13 +146,13 @@ describe('window', function () {
       });
 
       it('in', function () {
-        window.resize(0, start * 2 - change);
+        window.update(0, start * 2 - change);
         assert.equal(window.y, start);
         assert.equal(window.height, start - change);
       });
 
       it('out', function () {
-        window.resize(0, start * 2 + change);
+        window.update(0, start * 2 + change);
         assert.equal(window.y, start);
         assert.equal(window.height, start + change);
       });
@@ -171,15 +171,6 @@ describe('window', function () {
 
       window.close();
       assert.equal(window.isOpen, false);
-    });
-
-  });
-
-  describe('.requestFocus', function () {
-
-    it('should focus the window', function () {
-      var window = new Window({ id: 0 });
-      window.requestFocus();
     });
 
   });
@@ -239,15 +230,15 @@ describe('window', function () {
 
     it('should trigger on move', function () {
       window.startMove();
-      window.move(0, 0);
-      window.endMove();
+      window.update(0, 0);
+      window.endChange();
       assert(spy.calledOnce);
     });
 
     it('should trigger on resize', function () {
       window.startResize(0, 0);
-      window.resize(0, 0);
-      window.endResize();
+      window.update(0, 0);
+      window.endChange();
       assert(spy.calledOnce);
     });
 

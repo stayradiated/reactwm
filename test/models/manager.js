@@ -267,7 +267,6 @@ describe('manager', function () {
       };
 
       manager.add(props);
-      console.log(manager.toJSON());
       assert.deepEqual(manager.toJSON(), [props]);
     });
 

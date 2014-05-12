@@ -63,31 +63,33 @@ body {
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.5);
   background: #2980b9;
   overflow: hidden;
-  padding: 3px;
   -webkit-transition: -webkit-box-shadow 0.15s ease;
   transition: box-shadow 0.15s ease; }
   .window.active {
     background: #3498db;
     -webkit-box-shadow: 0 3px 20px 0 rgba(0, 0, 0, 0.6);
     box-shadow: 0 3px 20px 0 rgba(0, 0, 0, 0.6); }
-  .window header .title {
-    float: left;
-    color: #fff; }
-  .window header .close {
-    float: right;
-    width: 12px;
-    height: 12px;
-    margin: 4px;
-    background: rgba(0, 0, 0, 0.4); }
-    .window header .close:hover {
-      background: rgba(0, 0, 0, 0.6); }
+  .window header {
+    line-height: 30px; }
+    .window header .title {
+      margin-left: 7.5px;
+      float: left;
+      color: #fff; }
+    .window header .close {
+      float: right;
+      width: 15px;
+      height: 15px;
+      margin: 7.5px;
+      background: rgba(0, 0, 0, 0.4); }
+      .window header .close:hover {
+        background: rgba(0, 0, 0, 0.6); }
   .window .content {
     background: #fff;
     position: absolute;
-    top: 25px;
-    bottom: 3px;
-    left: 3px;
-    right: 3px; }
+    top: 30px;
+    bottom: 1px;
+    left: 1px;
+    right: 1px; }
 
 .guide {
   position: absolute;
