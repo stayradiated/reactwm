@@ -134,7 +134,7 @@ _.extend(Window.prototype, {
       delete this._startHeight;
       delete this._originX;
       delete this._originY;
-      this.emit('change:position');
+      this.emit('change:size');
     }
 
     this.emit('change:position');
