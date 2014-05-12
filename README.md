@@ -23,7 +23,7 @@ Then open http://localhost:8000
 var React = require('react');
 var ReactWM = require('reactwm');
 
-var Settings = require(./views/settings');
+var Settings = require('./views/settings');
 
 var manager = new ReactWM.Manager();
 
