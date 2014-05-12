@@ -1,14 +1,12 @@
 var _ = require('lodash');
 var signals = require('signals');
 var Window = require('./window');
-var Guides = require('./guides');
 
 var Manager = function (windows) {
   signals.convert(this);
 
   this.windows = {};
   this.order = [];
-  this.guides = new Guides(this);
 
   if (_.isArray(windows)) {
     windows.forEach(this.add, this);

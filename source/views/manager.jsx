@@ -4,9 +4,6 @@ var React = require('react');
 var CSSTransitionGroup = require('react/addons').addons.CSSTransitionGroup;
 
 var Window = require('./window');
-var Guides = require('./guides');
-
-var PADDING = 20;
 
 var Manager = React.createClass({
 
@@ -63,7 +60,6 @@ var Manager = React.createClass({
 
     return (
       <div className="window-manager">
-        <Guides guides={this.state.guides} />
         <div className="windows">
           <CSSTransitionGroup transitionName="windows">
             {windows}
