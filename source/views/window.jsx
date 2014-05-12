@@ -35,32 +35,22 @@ var Window = React.createClass({
   handleMouseDown: function (e) {
     this.focus();
     var mouse = this.props.parent.convertPoints(e);
-    if (e.button === 0) { this.startMove(mouse); }
-    else { this.startResize(mouse); }
-  },
-
-  startMove: function (mouse) {
-    this.window.startMove(mouse.x, mouse.y);
-  },
-
-  startResize: function (mouse) {
-    this.window.startResize(mouse.x, mouse.y);
+    if (e.button === 0) {
+      this.window.startMove(mouse.x, mouse.y);
+    } else {
+      this.window.startResize(mouse.x, mouse.y);
+    }
   },
 
   handleMouseMove: function (e) {
     if (this.window.mode == INACTIVE) return true;
     var mouse = this.props.parent.convertPoints(e);
-
-    if (this.window.mode === MOVE) this.window.move(mouse.x, mouse.y);
-    else if (this.window.mode === RESIZE) this.window.resize(mouse.x, mouse.y);
-
-    this.forceUpdate();
+    this.window.update(mouse.x, mouse.y);
+    this.forceUpdate(); // window.update does not trigger change
   },
 
   handleMouseUp: function () {
-    if (this.window.mode === INACTIVE) return true;
-    if (this.window.mode == MOVE) this.window.endMove();
-    else if (this.window.mode == RESIZE) this.window.endResize();
+    this.window.endChange();
   },
 
   focus: function () {
@@ -72,6 +62,7 @@ var Window = React.createClass({
   },
 
   render: function () {
+
     var classes = classSet({
       window: true,
       active: this.window.isFocused()

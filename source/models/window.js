@@ -56,18 +56,6 @@ _.extend(Window.prototype, {
   },
 
 
-  /**
-   * move the window to a point
-   * - x (int)
-   * - y (int)
-   */
-
-  move: function (x, y) {
-    this._realX = x - this._offsetX;
-    this._realY = y - this._offsetY;
-    this.snap();
-  },
-
   startMove: function (x, y) {
     this.mode = MOVE;
     this._offsetX = x - this.x;
@@ -76,7 +64,43 @@ _.extend(Window.prototype, {
     this._realY = this.y;
   },
 
-  endMove: function () {
+  startResize: function (x, y) {
+    this.mode = RESIZE;
+    this._quad = this.quadrant(x, y);
+    this._startX = this.x;
+    this._startY = this.y;
+    this._startWidth = this.width;
+    this._startHeight = this.height;
+    this._originX = x;
+    this._originY = y;
+    this._realX = this.x;
+    this._realY = this.y;
+  },
+
+  update: function (x, y) {
+    if (this.mode === MOVE) return this._move(x, y);
+    if (this.mode === RESIZE) return this._resize(x, y);
+  },
+
+  endChange: function (x, y) {
+    if (this.mode === MOVE) return this._endMove();
+    if (this.mode === RESIZE) return this._endResize();
+  },
+
+
+  /**
+   * move the window to a point
+   * - x (int)
+   * - y (int)
+   */
+
+  _move: function (x, y) {
+    this._realX = x - this._offsetX;
+    this._realY = y - this._offsetY;
+    this.snap();
+  },
+
+  _endMove: function () {
     delete this._offsetX;
     delete this._offsetY;
     delete this._realX;
@@ -95,7 +119,7 @@ _.extend(Window.prototype, {
    * - isTop (bool) : true=top, false=bottom
    */
 
-  resize: function (x, y) {
+  _resize: function (x, y) {
     var deltaX = x - this._originX;
     var deltaY = y - this._originY;
 
@@ -133,20 +157,7 @@ _.extend(Window.prototype, {
     }
   },
 
-  startResize: function (x, y) {
-    this.mode = RESIZE;
-    this._quad = this.quadrant(x, y);
-    this._startX = this.x;
-    this._startY = this.y;
-    this._startWidth = this.width;
-    this._startHeight = this.height;
-    this._originX = x;
-    this._originY = y;
-    this._realX = this.x;
-    this._realY = this.y;
-  },
-
-  endResize: function () {
+  _endResize: function () {
     delete this._quad;
     delete this._startX;
     delete this._startY;
@@ -229,7 +240,7 @@ _.extend(Window.prototype, {
 
   isFocused: function () {
     if (! this.manager) return false;
-    return this.manager.active === this;
+    return this.manager.active() === this;
   },
 
 

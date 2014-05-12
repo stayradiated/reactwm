@@ -160,7 +160,7 @@ _.extend(Manager.prototype, {
 
   active: function () {
     if (this.order.length === 0) return false;
-    return this.order[this.order.length - 1];
+    return this.windows[this.order[this.order.length - 1]];
   },
 
 

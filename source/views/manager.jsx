@@ -1,6 +1,7 @@
 var _ = require('lodash');
 var $ = require('jquery');
 var React = require('react');
+var CSSTransitionGroup = require('react/addons').addons.CSSTransitionGroup;
 
 var Window = require('./window');
 var Guides = require('./guides');
@@ -63,7 +64,11 @@ var Manager = React.createClass({
     return (
       <div className="window-manager">
         <Guides guides={this.state.guides} />
-        <div className="windows">{windows}</div>
+        <div className="windows">
+          <CSSTransitionGroup transitionName="windows">
+            {windows}
+          </CSSTransitionGroup>
+        </div>
       </div>
     );
   }
