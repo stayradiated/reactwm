@@ -41,12 +41,26 @@ _.extend(Window.prototype, {
     isOpen: true
   },
 
+
+  /**
+   * set position of the window
+   * - x (number)
+   * - y (number)
+   */
+
   setPosition: function (x, y) {
     this.x = x;
     this.y = y;
     this.emit('change:position');
     this.emit('change');
   },
+
+
+  /**
+   * resize the window
+   * - width (number)
+   * - height (number)
+   */
 
   setSize: function (width, height) {
     this.width = width;
@@ -56,145 +70,75 @@ _.extend(Window.prototype, {
   },
 
 
+  /**
+   * start moving the window
+   * - x (number) : horizontal position of the mouse
+   * - y (number) : vertical position of the mouse
+   */
+
   startMove: function (x, y) {
     this.mode = MOVE;
     this._offsetX = x - this.x;
     this._offsetY = y - this.y;
-    this._realX = this.x;
-    this._realY = this.y;
   },
+
+
+  /**
+   * start resizing the window
+   * - x (number) : horizontal position of the mouse
+   * - y (number) : vertical position of the mouse
+   */
 
   startResize: function (x, y) {
     this.mode = RESIZE;
-    this._quad = this.quadrant(x, y);
+    this._quad = this._quadrant(x, y);
     this._startX = this.x;
     this._startY = this.y;
     this._startWidth = this.width;
     this._startHeight = this.height;
     this._originX = x;
     this._originY = y;
-    this._realX = this.x;
-    this._realY = this.y;
   },
+
+
+  /**
+   * update a move/resize action
+   * - x (number) : horizontal position of the mouse
+   * - y (number) : vertical position of the mouse
+   */
 
   update: function (x, y) {
     if (this.mode === MOVE) return this._move(x, y);
     if (this.mode === RESIZE) return this._resize(x, y);
   },
 
-  endChange: function (x, y) {
-    if (this.mode === MOVE) return this._endMove();
-    if (this.mode === RESIZE) return this._endResize();
-  },
-
 
   /**
-   * move the window to a point
-   * - x (int)
-   * - y (int)
+   * finish moving/resizing the window
    */
 
-  _move: function (x, y) {
-    this._realX = x - this._offsetX;
-    this._realY = y - this._offsetY;
-    this.snap();
-  },
-
-  _endMove: function () {
-    delete this._offsetX;
-    delete this._offsetY;
-    delete this._realX;
-    delete this._realY;
+  endChange: function () {
+    if (this.mode === INACTIVE) return;
     this.mode = INACTIVE;
+
+    if (this.mode === MOVE) {
+      delete this._offsetX;
+      delete this._offsetY;
+    }
+
+    else if (this.mode === RESIZE) {
+      delete this._quad;
+      delete this._startX;
+      delete this._startY;
+      delete this._startWidth;
+      delete this._startHeight;
+      delete this._originX;
+      delete this._originY;
+      this.emit('change:position');
+    }
+
     this.emit('change:position');
     this.emit('change');
-  },
-
-
-  /**
-   * resize the window by an amount
-   * - deltaX (int) : negative=left, positive=right
-   * - detlaY (int) : negative=up, positive=down
-   * - isLeft (bool) : true=left, false=right
-   * - isTop (bool) : true=top, false=bottom
-   */
-
-  _resize: function (x, y) {
-    var deltaX = x - this._originX;
-    var deltaY = y - this._originY;
-
-    var finalWidth = this._startWidth + (this._quad.left ? deltaX * -1 : deltaX);
-    var finalHeight = this._startHeight + (this._quad.top ? deltaY * -1 : deltaY);
-
-    if (finalWidth > this.maxWidth ) {
-      deltaX = this.maxWidth - this._startWidth;
-      if (this._quad.left) deltaX *= -1;
-    } else if (finalWidth < this.minWidth) {
-      deltaX = this.minWidth - this._startWidth;
-      if (this._quad.left) deltaX *= -1;
-    }
-
-    if (finalHeight > this.maxHeight) {
-      deltaY = this.maxHeight - this._startHeight;
-      if (this._quad.top) deltaY *= -1;
-    } else if (finalHeight < this.minHeight) {
-      deltaY = this.minHeight - this._startHeight;
-      if (this._quad.top) deltaY *= -1;
-    }
-
-    if (this._quad.left) {
-      this.x = this._startX + deltaX;
-      this.width = this._startWidth - deltaX;
-    } else {
-      this.width = this._startWidth + deltaX;
-    }
-
-    if (this._quad.top) {
-      this.y = this._startY + deltaY;
-      this.height = this._startHeight - deltaY;
-    } else {
-      this.height = this._startHeight + deltaY;
-    }
-  },
-
-  _endResize: function () {
-    delete this._quad;
-    delete this._startX;
-    delete this._startY;
-    delete this._startWidth;
-    delete this._startHeight;
-    delete this._realX;
-    delete this._realY;
-    delete this._originX;
-    delete this._originY;
-    this.mode = INACTIVE;
-    this.emit('change:position');
-    this.emit('change:size');
-    this.emit('change');
-  },
-
-
-  /**
-   * snap the window to some guidelines
-   */
-
-  snap: function () {
-    this.x = this._realX;
-    this.y = this._realY;
-  },
-
-
-  /**
-   * find which quadrant of the window the mouse is
-   * - x (int)
-   * - y (int)
-   */
-
-  quadrant: function (x, y) {
-    return {
-      top: y < this.y + (this.height / 2),
-      left: x < this.x + (this.width / 2)
-    };
   },
 
 
@@ -273,6 +217,81 @@ _.extend(Window.prototype, {
       minHeight:  this.minHeight,
       title:      this.title,
       isOpen:     this.isOpen
+    };
+  },
+
+
+
+  /**
+   * private
+   * move the window to a point
+   * - x (number) : horizontal position of the mouse
+   * - y (number) : vertical position of the mouse
+   */
+
+  _move: function (x, y) {
+    this.x = x - this._offsetX;
+    this.y = y - this._offsetY;
+  },
+
+
+  /**
+   * private
+   * resize the window by an amount
+   * - x (number) : horizontal position of the mouse
+   * - y (number) : vertical position of the mouse
+   */
+
+  _resize: function (x, y) {
+    var deltaX = x - this._originX;
+    var deltaY = y - this._originY;
+
+    var finalWidth = this._startWidth + (this._quad.left ? deltaX * -1 : deltaX);
+    var finalHeight = this._startHeight + (this._quad.top ? deltaY * -1 : deltaY);
+
+    if (finalWidth > this.maxWidth ) {
+      deltaX = this.maxWidth - this._startWidth;
+      if (this._quad.left) deltaX *= -1;
+    } else if (finalWidth < this.minWidth) {
+      deltaX = this.minWidth - this._startWidth;
+      if (this._quad.left) deltaX *= -1;
+    }
+
+    if (finalHeight > this.maxHeight) {
+      deltaY = this.maxHeight - this._startHeight;
+      if (this._quad.top) deltaY *= -1;
+    } else if (finalHeight < this.minHeight) {
+      deltaY = this.minHeight - this._startHeight;
+      if (this._quad.top) deltaY *= -1;
+    }
+
+    if (this._quad.left) {
+      this.x = this._startX + deltaX;
+      this.width = this._startWidth - deltaX;
+    } else {
+      this.width = this._startWidth + deltaX;
+    }
+
+    if (this._quad.top) {
+      this.y = this._startY + deltaY;
+      this.height = this._startHeight - deltaY;
+    } else {
+      this.height = this._startHeight + deltaY;
+    }
+  },
+
+
+  /**
+   * private
+   * find which quadrant of the window the mouse is
+   * - x (number) : horizontal position of the mouse
+   * - y (number) : vertical position of the mouse
+   */
+
+  _quadrant: function (x, y) {
+    return {
+      top: y < this.y + (this.height / 2),
+      left: x < this.x + (this.width / 2)
     };
   }
 

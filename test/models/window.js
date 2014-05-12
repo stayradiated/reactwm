@@ -37,31 +37,31 @@ describe('window', function () {
 
   });
 
-  describe('.quadrant', function () {
+  describe('._quadrant', function () {
 
     it('top left', function () {
-      assert.deepEqual(window.quadrant(1, 1), {
+      assert.deepEqual(window._quadrant(1, 1), {
         top: true,
         left: true
       });
     });
 
     it('top right', function () {
-      assert.deepEqual(window.quadrant(99, 1), {
+      assert.deepEqual(window._quadrant(99, 1), {
         top: true,
         left: false
       });
     });
 
     it('bottom left', function () {
-      assert.deepEqual(window.quadrant(1, 99), {
+      assert.deepEqual(window._quadrant(1, 99), {
         top: false,
         left: true
       });
     });
 
     it('bottom right', function () {
-      assert.deepEqual(window.quadrant(99, 99), {
+      assert.deepEqual(window._quadrant(99, 99), {
         top: false,
         left: false
       });

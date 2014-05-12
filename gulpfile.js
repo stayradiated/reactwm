@@ -29,8 +29,8 @@ gulp.task('bundle', function () {
 gulp.task('example', ['example/scripts', 'example/stylesheets']);
 
 gulp.task('example/watch', ['example'], function () {
-  gulp.watch('example/source/**/*', ['example/scripts']);
-  gulp.watch('example/*.scss', ['example/stylesheets']);
+  gulp.watch('./source/**/*', ['example/scripts']);
+  gulp.watch('./example/*.scss', ['example/stylesheets']);
 });
 
 gulp.task('example/scripts', function () {
@@ -48,7 +48,7 @@ gulp.task('example/scripts', function () {
 
 gulp.task('example/stylesheets', function () {
   return gulp.src('./example/screen.scss')
-    .pipe(sass({logErrToConsole: true}))
+    .pipe(sass({errLogToConsole: true}))
     .pipe(autoprefixer())
     .pipe(gulp.dest('./example/dist/css'))
     .pipe(connect.reload());

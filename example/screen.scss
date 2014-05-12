@@ -76,13 +76,22 @@ body {
 
     .close {
       float: right;
-      width: $header_height / 2;
-      height: $header_height / 2;
-      margin: $header_height / 4;
-      background: rgba(0, 0, 0, 0.4);
+      height: $header_height;
+      width: $header_height;
+      transition: background 0.15s ease;
+
+      &:after {
+        content: 'x';
+        font-size: 15px;
+        display: block;
+        text-align: center;
+        width: $header_height;
+        line-height: $header_height;
+        color: #fff;
+      }
 
       &:hover {
-        background: rgba(0, 0, 0, 0.6);
+        background: rgba(0, 0, 0, 0.4);
       }
     }
 

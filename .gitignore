@@ -1,3 +1,4 @@
-dist/js/*.js
-dist/css/*.css
+example/dist/js/*.js
+example/dist/css/*.css
 node_modules
+source/bundle.js

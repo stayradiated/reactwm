@@ -11,9 +11,7 @@ var Manager = function (windows) {
   this.guides = new Guides(this);
 
   if (_.isArray(windows)) {
-    windows.forEach(function (window) {
-      this.add(window);
-    }, this);
+    windows.forEach(this.add, this);
   }
 };
 
@@ -132,7 +130,7 @@ _.extend(Manager.prototype, {
   },
 
 
-  /*
+  /**
    * focus on a window
    * - window (Window|string)
    */
@@ -180,10 +178,10 @@ _.extend(Manager.prototype, {
   },
 
 
-  /*
+  /**
    * loop through each window
-   * - iterator (function)
-   * - [context] (object)
+   * - iterator (function) : run once for each window
+   * - [context] (object) : context to run function as
    */
 
   forEach: function (iterator, context) {
@@ -194,10 +192,10 @@ _.extend(Manager.prototype, {
   },
 
 
-  /*
+  /**
    * map over each window
-   * - iterator (function)
-   * - [context]
+   * - iterator (function) : run once for each window
+   * - [context] (object) : context to run function as
    */
 
   map: function (iterator, context) {
@@ -208,8 +206,9 @@ _.extend(Manager.prototype, {
   },
 
 
-  /*
+  /**
    * export as a standard JS array
+   * > object
    */
 
   toJSON: function () {
@@ -219,8 +218,9 @@ _.extend(Manager.prototype, {
   },
 
 
-  /*
+  /**
    * export as a JSON string
+   * > string
    */
 
   toString: function () {
