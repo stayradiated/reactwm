@@ -2,9 +2,7 @@ var $ = require('jquery');
 var _ = require('lodash');
 var React = require('react');
 
-// TODO: Figure out a sensible way to combine these into one class
-var ManagerView = require('./views/manager');
-var ManagerModel = require('./models/manager');
+var ReactWM = require('../source/');
 
 
 var Settings = React.createClass({
@@ -37,7 +35,7 @@ $(function () {
 
   var data = localStorage.windows ? JSON.parse(localStorage.windows) : [];
 
-  var manager = window.m = new ManagerModel(data);
+  var manager = window.m = new ReactWM.Manager(data);
 
   manager.forEach(function (window) {
     window.content = <Settings />;
@@ -51,7 +49,7 @@ $(function () {
   manager.on('change:windows', save);
 
   React.renderComponent((
-    <ManagerView manager={manager} />
+    <ReactWM manager={manager} />
   ), $('.content')[0]);
 
   var settings1 = manager.open(<Settings />, {
@@ -84,3 +82,4 @@ $(function () {
   });
 
 });
+

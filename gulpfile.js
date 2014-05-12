@@ -1,48 +1,62 @@
 var gulp = require('gulp');
-var browserify = require('browserify');
-var reactify = require('reactify');
-var source = require('vinyl-source-stream');
-var connect = require('gulp-connect');
+var uglify = require('gulp-uglify');
 var sass = require('gulp-sass');
+var reactify = require('reactify');
+var connect = require('gulp-connect');
+var browserify = require('browserify');
+var streamify = require('gulp-streamify');
+var source = require('vinyl-source-stream');
 var autoprefixer = require('gulp-autoprefixer');
 
-gulp.task('default', ['scss', 'scripts']); 
+gulp.task('default', ['bundle', 'example']); 
 
-gulp.task('watch', ['default'], function () {
-  gulp.watch('source/**/*', ['scripts']);
-  gulp.watch('stylesheets/**/*', ['scss']);
-  gulp.watch('dist/*.html', ['html']);
+gulp.task('bundle', function () {
+  return browserify({ extensions: ['.js', '.json', '.jsx'] })
+  .add('./source/index.jsx')
+  .exclude('react')
+  .exclude('react/addons')
+  .exclude('lodash')
+  .exclude('jquery')
+  .exclude('signals')
+  .transform(reactify)
+  .bundle({ standalone: 'ReactWM' })
+  .on('error', console.log.bind(console))
+  .pipe(source('bundle.js'))
+  .pipe(streamify(uglify()))
+  .pipe(gulp.dest('./source'));
 });
 
-gulp.task('scripts', function () {
+gulp.task('example', ['example/scripts', 'example/stylesheets']);
+
+gulp.task('example/watch', ['example'], function () {
+  gulp.watch('example/source/**/*', ['example/scripts']);
+  gulp.watch('example/stylesheets/**/*', ['example/scss']);
+});
+
+gulp.task('example/scripts', function () {
   return browserify({
     extensions: ['.js', '.json', '.jsx']
   })
-  .add('./source/init.jsx')
+  .add('./example/app.jsx')
   .transform(reactify)
   .bundle()
   .on('error', console.log.bind(console))
   .pipe(source('app.js'))
-  .pipe(gulp.dest('dist/js'))
+  .pipe(gulp.dest('./example/dist/js'))
   .pipe(connect.reload());
 });
 
-gulp.task('html', function () {
-  return gulp.src('./dist/*.html')
-    .pipe(connect.reload());
-});
-
-gulp.task('scss', function () {
-  return gulp.src('./stylesheets/screen.scss')
+gulp.task('example/stylesheets', function () {
+  return gulp.src('./example/screen.scss')
     .pipe(sass({logErrToConsole: true}))
     .pipe(autoprefixer())
-    .pipe(gulp.dest('./dist/css'))
+    .pipe(gulp.dest('./example/dist/css'))
     .pipe(connect.reload());
 });
 
-gulp.task('connect', ['watch'], function () {
+gulp.task('example/connect', ['watch'], function () {
   return connect.server({
-    root: ['dist'],
+    root: ['example/dist'],
     port: 8000,
     livereload: true
   });

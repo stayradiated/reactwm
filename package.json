@@ -2,10 +2,11 @@
   "name": "reactwm",
   "version": "0.0.1",
   "description": "A minimal window manager built using React",
-  "main": "index.js",
+  "main": "source/bundle.js",
   "scripts": {
     "test": "mocha -R spec test/**/*.js -b",
-    "start": "gulp connect"
+    "postinstall": "gulp",
+    "start": "gulp example/connect"
   },
   "repository": {
     "type": "git",
@@ -20,7 +21,6 @@
   "devDependencies": {
     "browserify": "^3.46.0",
     "chai": "^1.9.1",
-    "envify": "^1.2.1",
     "gulp": "^3.6.2",
     "gulp-autoprefixer": "0.0.7",
     "gulp-connect": "^2.0.5",
@@ -28,7 +28,9 @@
     "mocha": "^1.18.2",
     "reactify": "^0.13.1",
     "sinon": "^1.9.1",
-    "vinyl-source-stream": "^0.1.1"
+    "vinyl-source-stream": "^0.1.1",
+    "gulp-uglify": "^0.3.0",
+    "gulp-streamify": "0.0.5"
   },
   "dependencies": {
     "jquery": "^2.1.1",
