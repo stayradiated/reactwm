@@ -1,8 +1,8 @@
 {
   "name": "reactwm",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A minimal window manager built using React",
-  "main": "source/bundle.js",
+  "main": "reactwm.min.js",
   "scripts": {
     "test": "mocha -R spec test/**/*.js -b",
     "start": "gulp example/connect"

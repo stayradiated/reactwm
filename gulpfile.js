@@ -21,9 +21,9 @@ gulp.task('bundle', function () {
   .transform(reactify)
   .bundle({ standalone: 'ReactWM' })
   .on('error', console.log.bind(console))
-  .pipe(source('bundle.js'))
+  .pipe(source('reactwm.min.js'))
   .pipe(streamify(uglify()))
-  .pipe(gulp.dest('./source'));
+  .pipe(gulp.dest('./'));
 });
 
 gulp.task('example', ['example/scripts', 'example/stylesheets']);
