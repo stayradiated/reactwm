@@ -1,29 +1,19 @@
 var gulp = require('gulp');
-var uglify = require('gulp-uglify');
+var react = require('gulp-react');
+
 var sass = require('gulp-sass');
-var reactify = require('reactify');
 var connect = require('gulp-connect');
-var browserify = require('browserify');
-var streamify = require('gulp-streamify');
 var source = require('vinyl-source-stream');
+var browserify = require('browserify');
+var reactify = require('reactify');
 var autoprefixer = require('gulp-autoprefixer');
 
-gulp.task('default', ['bundle', 'example']); 
+gulp.task('default', ['package']); 
 
-gulp.task('bundle', function () {
-  return browserify({ extensions: ['.js', '.json', '.jsx'] })
-  .add('./source/index.jsx')
-  .exclude('react')
-  .exclude('react/addons')
-  .exclude('lodash')
-  .exclude('jquery')
-  .exclude('signals')
-  .transform(reactify)
-  .bundle({ standalone: 'ReactWM' })
-  .on('error', console.log.bind(console))
-  .pipe(source('reactwm.min.js'))
-  .pipe(streamify(uglify()))
-  .pipe(gulp.dest('./'));
+gulp.task('package', function () {
+  return gulp.src('lib/**/*.js*')
+  .pipe(react())
+  .pipe(gulp.dest('pkg'));
 });
 
 gulp.task('example', ['example/scripts', 'example/stylesheets']);

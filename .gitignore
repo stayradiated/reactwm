@@ -1,4 +1,4 @@
-example/dist/js/*.js
-example/dist/css/*.css
-node_modules
-reactwm.min.js
+/example/dist/js/*.js
+/example/dist/css/*.css
+/node_modules
+/pkg

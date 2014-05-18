@@ -1,8 +1,7 @@
 var $ = require('jquery');
 var _ = require('lodash');
 var React = require('react');
-
-var ReactWM = require('../source/');
+var ReactWM = require('../lib/');
 
 
 var Settings = React.createClass({

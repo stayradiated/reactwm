@@ -45,7 +45,7 @@ body {
   position: relative;
 }
 
-.windows, .guides {
+.windows {
   position: absolute;
   top: 0; bottom: 0;
   left: 0; right: 0;
@@ -109,24 +109,6 @@ body {
   }
 
 }
-
-.guide {
-  position: absolute;
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.guide-horizontal {
-  left: 0;
-  right: 0;
-  height: 1px;
-}
-
-.guide-vertical {
-  top: 0;
-  bottom: 0;
-  width: 1px;
-}
-
 
 .settings {
   padding: 20px;
