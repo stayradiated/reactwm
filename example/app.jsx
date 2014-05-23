@@ -51,24 +51,6 @@ $(function () {
     <ReactWM manager={manager} />
   ), $('.content')[0]);
 
-  var settings1 = manager.open(<Settings />, {
-    id: 'settings-1',
-    title: 'Settings 1',
-    width: 300,
-    height: 300,
-    x: 200,
-    y: 200
-  });
-
-  var settings2 = manager.open(<Settings />, {
-    id: 'settings-2',
-    title: 'Settings 2',
-    width: 300,
-    height: 300,
-    x: 600,
-    y: 200
-  });
-
   $('.add-window').on('click', function () {
     manager.open(<Settings />, { 
       id: 'settings-' + Date.now(),
@@ -79,6 +61,31 @@ $(function () {
       y: 20
     });
   });
+
+  var openWin1 = function () {
+    manager.open(<Settings />, { 
+      id: 'settings-1',
+      title: 'Settings 1',
+      width: 300,
+      height: 300,
+      x: 20,
+      y: 20
+    });
+  };
+
+  var openWin2 = function () {
+    manager.open(<Settings />, { 
+      id: 'settings-2',
+      title: 'Settings 2',
+      width: 300,
+      height: 300,
+      x: 20,
+      y: 20
+    });
+  };
+
+  $('.open-win-1').on('click', openWin1);
+  $('.open-win-2').on('click', openWin2);
 
 });
 

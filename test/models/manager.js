@@ -1,7 +1,7 @@
 var sinon = require('sinon');
 var assert = require('chai').assert;
-var Window = require('../../source/models/window');
-var Manager = require('../../source/models/manager');
+var Window = require('../../lib/models/window');
+var Manager = require('../../lib/models/manager');
 
 describe('manager', function () {
 

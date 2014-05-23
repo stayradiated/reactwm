@@ -26,8 +26,9 @@ var Window = React.createClass({
   },
 
   componentWillUnmount: function () {
-    this.window.on('change', this.forceUpdate, this);
     this.window.off('change', this.forceUpdate);
+    $(document).off('mousemove', this.handleMouseMove);
+    $(document).off('mouseup', this.handleMouseUp);
   },
 
   handlePropagation: function (e) {

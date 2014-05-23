@@ -16,24 +16,32 @@ gulp.task('package', function () {
   .pipe(gulp.dest('pkg'));
 });
 
-gulp.task('example', ['example/lib', 'example/stylesheets']);
+gulp.task('watch', ['default'], function () {
+  gulp.watch('./lib/**/*', ['package']);
+});
+
+gulp.task('example', ['example/app', 'example/stylesheets']);
 
 gulp.task('example/watch', ['example'], function () {
-  gulp.watch('./lib/**/*', ['example/lib']);
+  gulp.watch('./lib/**/*', ['example/app']);
+  gulp.watch('./example/app.jsx', ['example/app']);
   gulp.watch('./example/*.scss', ['example/stylesheets']);
 });
 
-gulp.task('example/lib', function () {
-  return browserify({
+gulp.task('example/app', function (cb) {
+  browserify({
     extensions: ['.js', '.json', '.jsx']
   })
   .add('./example/app.jsx')
   .transform(reactify)
   .bundle()
-  .on('error', console.log.bind(console))
+  .on('error', function (err) {
+    console.log(err); cb();
+  })
   .pipe(source('app.js'))
   .pipe(gulp.dest('./example/dist/js'))
-  .pipe(connect.reload());
+  .pipe(connect.reload())
+  .on('end', cb);
 });
 
 gulp.task('example/stylesheets', function () {

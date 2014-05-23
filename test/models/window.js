@@ -1,6 +1,6 @@
 var assert = require('chai').assert;
 var sinon = require('sinon');
-var Window = require('../../source/models/window');
+var Window = require('../../lib/models/window');
 
 describe('window', function () {
   var window;
