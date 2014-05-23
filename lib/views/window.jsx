@@ -13,8 +13,7 @@ var Window = React.createClass({
   },
 
   componentDidMount: function () {
-    this.window.on('change:open', this.forceUpdate, this);
-    this.window.on('change:title', this.forceUpdate, this);
+    this.window.on('change', this.forceUpdate, this);
     this.window.on('change:position', this.setPosition, this);
     this.window.on('change:size', this.setSize, this);
     document.addEventListener('mousemove', this.handleMouseMove);
@@ -22,17 +21,11 @@ var Window = React.createClass({
   },
 
   componentWillUnmount: function () {
-    this.window.off('change:open', this.forceUpdate);
-    this.window.off('change:title', this.forceUpdate);
+    this.window.off('change', this.forceUpdate);
     this.window.off('change:position', this.setPosition);
     this.window.off('change:size', this.setSize);
     document.removeEventListener('mousemove', this.handleMouseMove);
     document.removeEventListener('mouseup', this.handleMouseUp);
-  },
-
-  componentDidUpdate: function () {
-    this.setSize();
-    this.setPosition();
   },
 
   setSize: function () {
@@ -99,20 +92,26 @@ var Window = React.createClass({
   },
 
   render: function () {
-
     var classes = classSet({
       window: true,
       active: this.window.isFocused()
     });
 
+    var styles = {
+      top: this.window.y,
+      left: this.window.x,
+      width: this.window.width,
+      height: this.window.height
+    };
+
     return (
-      <div className={classes} onMouseDown={this.handleMove}>
+      <div className={classes} style={styles} onMouseDown={this.handleMove}>
         <header>
-          <div className="title">{this.window.title}</div>
-          <div className="close" onMouseDown={this.preventDefault} onClick={this.close} />
+          <div className='title'>{this.window.title}</div>
+          <div className='close' onMouseDown={this.preventDefault} onClick={this.close} />
         </header>
         <div className='content' onMouseDown={this.handlePropagation}>
-          {this.window.content}
+          {this.window.component}
         </div>
         <div className='resize' onMouseDown={this.handleResize} />
       </div>

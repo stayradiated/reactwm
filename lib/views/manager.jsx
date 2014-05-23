@@ -41,11 +41,9 @@ var Manager = React.createClass({
     }, this);
 
     return (
-      <div className="window-manager">
-        <div className="windows">
-          <CSSTransitionGroup transitionName="windows">
-            {windows}
-          </CSSTransitionGroup>
+      <div className='window-manager'>
+        <div className='windows'>
+          {windows}
         </div>
       </div>
     );

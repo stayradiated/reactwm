@@ -30,7 +30,8 @@ gulp.task('example/watch', ['example'], function () {
 
 gulp.task('example/app', function (cb) {
   browserify({
-    extensions: ['.js', '.json', '.jsx']
+    extensions: ['.js', '.json', '.jsx'],
+    noParse: ['jquery', 'lodash', 'signals']
   })
   .add('./example/app.jsx')
   .transform(reactify)

@@ -37,7 +37,7 @@ $(function () {
   var manager = window.m = new ReactWM.Manager(data);
 
   manager.forEach(function (window) {
-    window.content = <Settings />;
+    window.setComponent(<Settings />);
   });
 
   var save = _.debounce(function () {
@@ -52,9 +52,10 @@ $(function () {
   ), $('.content')[0]);
 
   $('.add-window').on('click', function () {
-    manager.open(<Settings />, { 
-      id: 'settings-' + Date.now(),
-      title: 'Settings ' + Date.now(),
+    var id = Date.now();
+
+    manager.open('settings-' + id, <Settings />, { 
+      title: 'Settings ' + id,
       width: 300,
       height: 300,
       x: 20,
@@ -63,8 +64,7 @@ $(function () {
   });
 
   var openWin1 = function () {
-    manager.open(<Settings />, { 
-      id: 'settings-1',
+    manager.open('settings-1', <Settings />, { 
       title: 'Settings 1',
       width: 300,
       height: 300,
@@ -74,8 +74,7 @@ $(function () {
   };
 
   var openWin2 = function () {
-    manager.open(<Settings />, { 
-      id: 'settings-2',
+    manager.open('settings-2', <Settings />, { 
       title: 'Settings 2',
       width: 300,
       height: 300,

@@ -124,23 +124,23 @@ body {
   padding: 20px;
 }
 
-$fade: opacity .1s ease-in;
+$fade: opacity 1s ease-in;
 
-.windows-enter {
-  opacity: 0.01;
+.transition-enter {
+  opacity: 0;
   transition: $fade;
 }
 
-.windows-enter.windows-enter-active {
+.transition-enter.transition-enter-active {
   opacity: 1;
 }
 
-.windows-leave {
+.transition-leave {
   opacity: 1;
   transition: $fade;
 }
 
-.windows-leave.windows-leave-active {
-  opacity: 0.01;
+.transition-leave.transition-leave-active {
+  opacity: 0;
 }
 
