@@ -108,6 +108,16 @@ body {
     right: $padding;
   }
 
+  .resize {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 10px;
+    height: 10px;
+    background: #ccc;
+    cursor: se-resize;
+  }
+
 }
 
 .settings {

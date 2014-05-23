@@ -18,7 +18,6 @@ var Manager = React.createClass({
 
   componentDidMount: function () {
     var el = $(this.getDOMNode());
-    el.on('contextmenu', this.ignore);
     this.setState({ offset: el.offset() });
   },
 
@@ -29,11 +28,6 @@ var Manager = React.createClass({
         left: 0
       }
     };
-  },
-
-  ignore: function (e) {
-    e.preventDefault();
-    return false;
   },
 
   handleStartMove: function (window) {

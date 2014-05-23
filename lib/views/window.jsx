@@ -1,5 +1,4 @@
 var _ = require('lodash');
-var $ = require('jquery');
 var React = require('react');
 var classSet = require('react/addons').addons.classSet;
 
@@ -9,43 +8,44 @@ var RESIZE = 2;
 
 var Window = React.createClass({
 
-  ignore: function (e) {
-    e.preventDefault();
-    return false;
-  },
-
   componentWillMount: function () {
-    this.shouldIgnoreMouse = false;
     this.window = this.props.window;
   },
 
   componentDidMount: function () {
     this.window.on('change', this.forceUpdate, this);
-    $(document).on('mousemove', this.handleMouseMove);
-    $(document).on('mouseup', this.handleMouseUp);
+    document.addEventListener('mousemove', this.handleMouseMove);
+    document.addEventListener('mouseup', this.handleMouseUp);
   },
 
   componentWillUnmount: function () {
     this.window.off('change', this.forceUpdate);
-    $(document).off('mousemove', this.handleMouseMove);
-    $(document).off('mouseup', this.handleMouseUp);
+    document.removeEventListener('mousemove', this.handleMouseMove);
+    document.removeEventListener('mouseup', this.handleMouseUp);
+  },
+
+  preventDefault: function (e) {
+    e.preventDefault();
+    return false;
   },
 
   handlePropagation: function (e) {
     if (!(e.ctrlKey || e.metaKey || e.altKey || e.button !== 0)){
-      this.shouldIgnoreMouse = true;
+      e.stopPropagation();
     }
   },
 
-  handleMouseDown: function (e) {
-    if (this.shouldIgnoreMouse) return;
+  handleResize: function (e) {
     this.focus();
     var mouse = this.convertPoints(e);
-    if (e.button === 0) {
-      this.window.startMove(mouse.x, mouse.y);
-    } else {
-      this.window.startResize(mouse.x, mouse.y);
-    }
+    this.window.startResize(mouse.x, mouse.y);
+    e.stopPropagation();
+  },
+
+  handleMove: function (e) {
+    this.focus();
+    var mouse = this.convertPoints(e);
+    this.window.startMove(mouse.x, mouse.y);
   },
 
   handleMouseMove: function (e) {
@@ -56,7 +56,6 @@ var Window = React.createClass({
   },
 
   handleMouseUp: function () {
-    this.shouldIgnoreMouse = false;
     this.window.endChange();
   },
 
@@ -91,14 +90,15 @@ var Window = React.createClass({
     };
 
     return (
-      <div className={classes} style={styles} onMouseDown={this.handleMouseDown}>
+      <div className={classes} style={styles} onMouseDown={this.handleMove}>
         <header>
           <div className="title">{this.window.title}</div>
-          <div className="close" onMouseDown={this.ignore} onClick={this.close} />
+          <div className="close" onMouseDown={this.preventDefault} onClick={this.close} />
         </header>
         <div className='content' onMouseDown={this.handlePropagation}>
           {this.window.content}
         </div>
+        <div className='resize' onMouseDown={this.handleResize} />
       </div>
     );
   }
