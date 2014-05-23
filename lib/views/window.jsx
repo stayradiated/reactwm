@@ -14,16 +14,12 @@ var Window = React.createClass({
 
   componentDidMount: function () {
     this.window.on('change', this.forceUpdate, this);
-    this.window.on('change:position', this.setPosition, this);
-    this.window.on('change:size', this.setSize, this);
     document.addEventListener('mousemove', this.handleMouseMove);
     document.addEventListener('mouseup', this.handleMouseUp);
   },
 
   componentWillUnmount: function () {
     this.window.off('change', this.forceUpdate);
-    this.window.off('change:position', this.setPosition);
-    this.window.off('change:size', this.setSize);
     document.removeEventListener('mousemove', this.handleMouseMove);
     document.removeEventListener('mouseup', this.handleMouseUp);
   },
@@ -68,7 +64,8 @@ var Window = React.createClass({
     if (this.window.mode == INACTIVE) return true;
     var mouse = this.convertPoints(e);
     this.window.update(mouse.x, mouse.y);
-    this.forceUpdate(); // window.update does not trigger change
+    this.setPosition();
+    this.setSize();
   },
 
   handleMouseUp: function () {
@@ -113,7 +110,11 @@ var Window = React.createClass({
         <div className='content' onMouseDown={this.handlePropagation}>
           {this.window.component}
         </div>
-        <div className='resize' onMouseDown={this.handleResize} />
+        <div className='resize s-resize' onMouseDown={this.handleResize} />
+        <div className='resize e-resize' onMouseDown={this.handleResize} />
+        <div className='resize w-resize' onMouseDown={this.handleResize} />
+        <div className='resize sw-resize' onMouseDown={this.handleResize} />
+        <div className='resize se-resize' onMouseDown={this.handleResize} />
       </div>
     );
   }

@@ -31,14 +31,15 @@ body {
     }
 
   }
-}
 
-.content {
-  position: absolute;
-  top: 30px; bottom: 0;
-  width: 100%;
-  background: #34495e;
-  overflow: hidden;
+  & > .content {
+    position: absolute;
+    top: 30px; bottom: 0;
+    width: 100%;
+    background: #34495e;
+    overflow: hidden;
+  }
+
 }
 
 .window-manager {
@@ -99,7 +100,7 @@ body {
   }
 
   .content {
-    $padding: 1px;
+    $padding: 3px;
     background: #fff;
     position: absolute;
     top: $header_height;
@@ -111,13 +112,43 @@ body {
   .resize {
     position: absolute;
     bottom: 0;
-    right: 0;
-    width: 10px;
-    height: 10px;
-    background: #ccc;
-    cursor: se-resize;
-  }
 
+    &.se-resize {
+      right: 0;
+      cursor: se-resize;
+      width: 10px;
+      height: 10px;
+    }
+
+    &.sw-resize {
+      left: 0;
+      cursor: sw-resize;
+      width: 10px;
+      height: 10px;
+    }
+
+    &.s-resize {
+      left: 0;
+      right: 0;
+      cursor: s-resize;
+      height: 10px;
+    }
+
+    &.e-resize {
+      right: 0;
+      top: $header_height;
+      cursor: e-resize;
+      width: 10px;
+    }
+
+    &.w-resize {
+      left: 0;
+      top: $header_height;
+      cursor: w-resize;
+      width: 10px;
+    }
+
+  }
 }
 
 .settings {
