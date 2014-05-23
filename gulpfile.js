@@ -16,14 +16,14 @@ gulp.task('package', function () {
   .pipe(gulp.dest('pkg'));
 });
 
-gulp.task('example', ['example/scripts', 'example/stylesheets']);
+gulp.task('example', ['example/lib', 'example/stylesheets']);
 
 gulp.task('example/watch', ['example'], function () {
-  gulp.watch('./source/**/*', ['example/scripts']);
+  gulp.watch('./lib/**/*', ['example/lib']);
   gulp.watch('./example/*.scss', ['example/stylesheets']);
 });
 
-gulp.task('example/scripts', function () {
+gulp.task('example/lib', function () {
   return browserify({
     extensions: ['.js', '.json', '.jsx']
   })

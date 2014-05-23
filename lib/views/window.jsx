@@ -15,26 +15,31 @@ var Window = React.createClass({
   },
 
   componentWillMount: function () {
+    this.shouldIgnoreMouse = false;
     this.window = this.props.window;
+  },
+
+  componentDidMount: function () {
     this.window.on('change', this.forceUpdate, this);
     $(document).on('mousemove', this.handleMouseMove);
     $(document).on('mouseup', this.handleMouseUp);
   },
 
   componentWillUnmount: function () {
+    this.window.on('change', this.forceUpdate, this);
     this.window.off('change', this.forceUpdate);
   },
 
   handlePropagation: function (e) {
     if (!(e.ctrlKey || e.metaKey || e.altKey || e.button !== 0)){
-      this.focus();
-      e.stopPropagation();
+      this.shouldIgnoreMouse = true;
     }
   },
 
   handleMouseDown: function (e) {
+    if (this.shouldIgnoreMouse) return;
     this.focus();
-    var mouse = this.props.parent.convertPoints(e);
+    var mouse = this.convertPoints(e);
     if (e.button === 0) {
       this.window.startMove(mouse.x, mouse.y);
     } else {
@@ -44,12 +49,13 @@ var Window = React.createClass({
 
   handleMouseMove: function (e) {
     if (this.window.mode == INACTIVE) return true;
-    var mouse = this.props.parent.convertPoints(e);
+    var mouse = this.convertPoints(e);
     this.window.update(mouse.x, mouse.y);
     this.forceUpdate(); // window.update does not trigger change
   },
 
   handleMouseUp: function () {
+    this.shouldIgnoreMouse = false;
     this.window.endChange();
   },
 
@@ -58,7 +64,15 @@ var Window = React.createClass({
   },
 
   close: function () {
+    this.window.requestFocus();
     this.window.close();
+  },
+
+  convertPoints: function (e) {
+    return {
+      x: e.clientX - this.props.offset.left,
+      y: e.clientY - this.props.offset.top
+    };
   },
 
   render: function () {

@@ -40,22 +40,10 @@ var Manager = React.createClass({
     this.props.manager.bringToFront(window);
   },
 
-  handleEndMove: function (window) {
-  },
-
-  convertPoints: function (e) {
-    return {
-      x: e.clientX - this.state.offset.left,
-      y: e.clientY - this.state.offset.top
-    };
-  },
-
   render: function () {
 
-    var windows = this.props.manager.filter(function (window) {
-      return window.isOpen;
-    }).map(function (window) {
-      return <Window key={window.id} parent={this} window={window} />;
+    var windows = this.props.manager.getOpenWindows().map(function (window) {
+      return <Window key={window.id} offset={this.state.offset} window={window} />;
     }, this);
 
     return (
