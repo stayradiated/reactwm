@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var $ = require('jquery');
 var React = require('react');
 var classSet = require('react/addons').addons.classSet;
 
@@ -43,6 +44,7 @@ var Window = React.createClass({
 
   handlePropagation: function (e) {
     if (!(e.ctrlKey || e.metaKey || e.altKey || e.button !== 0)){
+      this.focus();
       e.stopPropagation();
     }
   },

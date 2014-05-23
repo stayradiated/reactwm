@@ -115,14 +115,14 @@ body {
 
     &.se-resize {
       right: 0;
-      cursor: se-resize;
+      cursor: nwse-resize;
       width: 10px;
       height: 10px;
     }
 
     &.sw-resize {
       left: 0;
-      cursor: sw-resize;
+      cursor: nesw-resize;
       width: 10px;
       height: 10px;
     }
@@ -130,21 +130,21 @@ body {
     &.s-resize {
       left: 0;
       right: 0;
-      cursor: s-resize;
+      cursor: ns-resize;
       height: 10px;
     }
 
     &.e-resize {
       right: 0;
       top: $header_height;
-      cursor: e-resize;
+      cursor: ew-resize;
       width: 10px;
     }
 
     &.w-resize {
       left: 0;
       top: $header_height;
-      cursor: w-resize;
+      cursor: ew-resize;
       width: 10px;
     }
 
