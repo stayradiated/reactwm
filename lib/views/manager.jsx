@@ -36,7 +36,7 @@ var Manager = React.createClass({
 
   render: function () {
 
-    var windows = this.props.manager.getOpenWindows().map(function (window) {
+    var windows = this.props.manager.openWindows().map(function (window) {
       return <Window key={window.id} offset={this.state.offset} window={window} />;
     }, this);
 

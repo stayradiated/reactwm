@@ -25,16 +25,15 @@ var Window = React.createClass({
     document.removeEventListener('mouseup', this.handleMouseUp);
   },
 
-  setSize: function () {
-    var el = this.getDOMNode();
-    el.style.top = this.window.y + 'px';
-    el.style.left = this.window.x + 'px';
-  },
-
-  setPosition: function () {
-    var el = this.getDOMNode();
-    el.style.width = this.window.width + 'px';
-    el.style.height = this.window.height + 'px';
+  quickUpdate: function () {
+    var self = this;
+    requestAnimationFrame(function () {
+      var el = self.getDOMNode();
+      el.style.width = self.window.width + 'px';
+      el.style.height = self.window.height + 'px';
+      el.style.top = self.window.y + 'px';
+      el.style.left = self.window.x + 'px';
+    });
   },
 
   preventDefault: function (e) {
@@ -66,8 +65,7 @@ var Window = React.createClass({
     if (this.window.mode == INACTIVE) return true;
     var mouse = this.convertPoints(e);
     this.window.update(mouse.x, mouse.y);
-    this.setPosition();
-    this.setSize();
+    this.quickUpdate();
   },
 
   handleMouseUp: function () {
@@ -100,7 +98,8 @@ var Window = React.createClass({
       top: this.window.y,
       left: this.window.x,
       width: this.window.width,
-      height: this.window.height
+      height: this.window.height,
+      zIndex: this.window.index
     };
 
     return (

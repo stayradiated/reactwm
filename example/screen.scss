@@ -68,7 +68,13 @@ body {
   $header_height: 30px;
 
   header {
+    position: absolute;
+    top: 0;
+    height: $header_height;
+    left: 0;
+    right: 0;
     line-height: $header_height;
+    cursor: move;
 
     .title {
       margin-left: $header_height / 4;
@@ -81,6 +87,7 @@ body {
       height: $header_height;
       width: $header_height;
       transition: background 0.15s ease;
+      cursor: default;
 
       &:after {
         content: 'x';

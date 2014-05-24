@@ -36,7 +36,7 @@ $(function () {
 
   var manager = window.m = new ReactWM.Manager(data);
 
-  manager.forEach(function (window) {
+  manager.allWindows().forEach(function (window) {
     window.setComponent(<Settings />);
   });
 
