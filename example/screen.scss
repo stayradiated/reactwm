@@ -122,14 +122,14 @@ body {
 
     &.se-resize {
       right: 0;
-      cursor: nwse-resize;
+      cursor: se-resize;
       width: 10px;
       height: 10px;
     }
 
     &.sw-resize {
       left: 0;
-      cursor: nesw-resize;
+      cursor: sw-resize;
       width: 10px;
       height: 10px;
     }

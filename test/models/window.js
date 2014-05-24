@@ -196,8 +196,13 @@ describe('window', function () {
         id: 'window-1',
         x: 20,
         y: 30,
+        index: 1,
         width: 200,
         height: 400,
+        maxWidth: Infinity,
+        minWidth: 0,
+        maxHeight: Infinity,
+        minHeight: 0,
         title: 'Test',
         isOpen: true
       };
