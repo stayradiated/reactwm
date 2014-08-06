@@ -6,6 +6,7 @@ var source = require('vinyl-source-stream');
 var connect = require('gulp-connect');
 var reactify = require('reactify');
 var watchify = require('watchify');
+var browserify = require('browserify');
 var autoprefixer = require('gulp-autoprefixer');
 
 gulp.task('default', ['package']); 
@@ -31,19 +32,27 @@ gulp.task('example', ['example/stylesheets', 'example/app'], function () {
 });
 
 gulp.task('example/app', function () {
-  var bundler = watchify({ extensions: '.jsx' });
-  bundler.add('./example/app.jsx');
+  var bundler = watchify(browserify({
+    cache: {},
+    packageCache: {},
+    fullPaths: true,
+    extensions: '.jsx'
+  }));
 
+  bundler.add('./example/app.jsx');
   bundler.transform(reactify);
 
   bundler.on('update', rebundle);
-  bundler.on('error', console.log.bind(console));
 
   function rebundle () {
+    console.log('rebundling');
     return bundler.bundle()
-    .pipe(source('bundle.js'))
-    .pipe(gulp.dest('./example/dist/js'))
-    .pipe(connect.reload());
+      .on('error', function (err) {
+        console.log(err.message);
+      })
+      .pipe(source('main.js'))
+      .pipe(gulp.dest('./example/dist/js'))
+      .pipe(connect.reload());
   }
 
   return rebundle();
