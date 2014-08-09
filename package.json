@@ -25,7 +25,7 @@
     "gulp-connect": "^2.0.6",
     "gulp-react": "^0.5.0",
     "gulp-sass": "^0.7.2",
-    "mocha": "^1.21.3",
+    "mocha": "^1.21.4",
     "reactify": "^0.14.0",
     "sinon": "^1.10.3",
     "vinyl-source-stream": "^0.1.1",

@@ -3,11 +3,18 @@ var $ = require('jquery');
 var React = require('react');
 var classSet = require('react/addons').addons.classSet;
 
+var WindowModel = require('../models/window');
+
 var INACTIVE = 0;
-var MOVE = 1;
-var RESIZE = 2;
+var MOVE     = 1;
+var RESIZE   = 2;
 
 var Window = React.createClass({
+
+  propTypes: {
+    window: React.PropTypes.instanceOf(WindowModel).isRequired,
+    offset: React.PropTypes.object.isRequired
+  },
 
   componentWillMount: function () {
     this.window = this.props.window;
@@ -29,10 +36,10 @@ var Window = React.createClass({
     var self = this;
     requestAnimationFrame(function () {
       var el = self.getDOMNode();
-      el.style.width = self.window.width + 'px';
+      el.style.width  = self.window.width + 'px';
       el.style.height = self.window.height + 'px';
-      el.style.top = self.window.y + 'px';
-      el.style.left = self.window.x + 'px';
+      el.style.top    = self.window.y + 'px';
+      el.style.left   = self.window.x + 'px';
     });
   },
 
@@ -95,14 +102,15 @@ var Window = React.createClass({
     });
 
     var styles = {
-      top: this.window.y,
-      left: this.window.x,
-      width: this.window.width,
-      height: this.window.height,
-      zIndex: this.window.index
+      top:     this.window.y,
+      left:    this.window.x,
+      width:   this.window.width,
+      height:  this.window.height,
+      zIndex:  this.window.index
     };
 
     return (
+      /* jshint ignore: start */
       <div className={classes} style={styles} onMouseDown={this.handleMove}>
         <header>
           <div className='title'>{this.window.title}</div>
@@ -117,6 +125,7 @@ var Window = React.createClass({
         <div className='resize sw-resize' onMouseDown={this.handleResize} />
         <div className='resize se-resize' onMouseDown={this.handleResize} />
       </div>
+      /* jshint ignore: end */
     );
   }
 

@@ -1,6 +1,5 @@
 var gulp = require('gulp');
 var react = require('gulp-react');
-
 var sass = require('gulp-sass');
 var source = require('vinyl-source-stream');
 var connect = require('gulp-connect');

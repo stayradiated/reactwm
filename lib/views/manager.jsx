@@ -3,22 +3,31 @@ var $ = require('jquery');
 var React = require('react');
 var CSSTransitionGroup = require('react/addons').addons.CSSTransitionGroup;
 
+var WindowModel = require('../models/window');
+var ManagerModel = require('../models/manager');
 var Window = require('./window');
 
 var Manager = React.createClass({
 
-  componentWillMount: function () {
+  statics: {
+    Manager: ManagerModel,
+    Window: WindowModel
+  },
+
+  propTypes: {
+    manager: React.PropTypes.instanceOf(ManagerModel).isRequired
+  },
+
+  componentDidMount: function () {
     this.manager = this.props.manager;
     this.manager.on('change', this.forceUpdate, this);
+
+    var el = $(this.getDOMNode());
+    this.setState({ offset: el.offset() });
   },
 
   componentWillUnmount: function () {
     this.manager.off('change', this.forceUpdate);
-  },
-
-  componentDidMount: function () {
-    var el = $(this.getDOMNode());
-    this.setState({ offset: el.offset() });
   },
 
   getInitialState: function () {
@@ -30,22 +39,24 @@ var Manager = React.createClass({
     };
   },
 
-  handleStartMove: function (window) {
-    this.props.manager.bringToFront(window);
-  },
-
   render: function () {
 
     var windows = this.props.manager.openWindows().map(function (window) {
-      return <Window key={window.id} offset={this.state.offset} window={window} />;
+      /* jshint ignore: start */
+      return <Window
+        key={window.id}
+        offset={this.state.offset}
+        window={window}
+      />;
+      /* jshint ignore: end */
     }, this);
 
     return (
+      /* jshint ignore: start */
       <div className='window-manager'>
-        <div className='windows'>
-          {windows}
-        </div>
+        <div className='windows'>{windows}</div>
       </div>
+      /* jshint ignore: end */
     );
   }
 
