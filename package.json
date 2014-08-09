@@ -1,6 +1,6 @@
 {
   "name": "reactwm",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "A minimal window manager built using React",
   "main": "./pkg/index.js",
   "scripts": {
