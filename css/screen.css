@@ -1,0 +1,140 @@
+body {
+  margin: 0;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  cursor: default;
+  font: 12px/18px 'Open Sans', sans-serif;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 100%; }
+  body > header {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    background: #2c3e50;
+    color: #fff;
+    padding: 0; }
+    body > header span {
+      padding: 0 20px;
+      display: inline-block; }
+    body > header .title {
+      background: #e74c3c; }
+    body > header .clickable:hover {
+      background: rgba(0, 0, 0, 0.3); }
+  body > .content {
+    position: absolute;
+    top: 30px;
+    bottom: 0;
+    width: 100%;
+    background: #34495e;
+    overflow: hidden; }
+
+.window-manager {
+  position: relative; }
+
+.windows {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0; }
+
+.window {
+  position: absolute;
+  background: #fff;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.5);
+  background: #2980b9;
+  overflow: hidden;
+  -webkit-transition: box-shadow 0.15s ease;
+          transition: box-shadow 0.15s ease; }
+  .window.active {
+    background: #3498db;
+    box-shadow: 0 3px 20px 0 rgba(0, 0, 0, 0.6); }
+  .window header {
+    position: absolute;
+    top: 0;
+    height: 30px;
+    left: 0;
+    right: 0;
+    line-height: 30px;
+    cursor: move; }
+    .window header .title {
+      margin-left: 7.5px;
+      float: left;
+      color: #fff; }
+    .window header .close {
+      float: right;
+      height: 30px;
+      width: 30px;
+      -webkit-transition: background 0.15s ease;
+              transition: background 0.15s ease;
+      cursor: default; }
+      .window header .close:after {
+        content: 'x';
+        font-size: 15px;
+        display: block;
+        text-align: center;
+        width: 30px;
+        line-height: 30px;
+        color: #fff; }
+      .window header .close:hover {
+        background: rgba(0, 0, 0, 0.4); }
+  .window .content {
+    background: #fff;
+    position: absolute;
+    top: 30px;
+    bottom: 3px;
+    left: 3px;
+    right: 3px; }
+  .window .resize {
+    position: absolute;
+    bottom: 0; }
+    .window .resize.se-resize {
+      right: 0;
+      cursor: se-resize;
+      width: 10px;
+      height: 10px; }
+    .window .resize.sw-resize {
+      left: 0;
+      cursor: sw-resize;
+      width: 10px;
+      height: 10px; }
+    .window .resize.s-resize {
+      left: 0;
+      right: 0;
+      cursor: ns-resize;
+      height: 10px; }
+    .window .resize.e-resize {
+      right: 0;
+      top: 30px;
+      cursor: ew-resize;
+      width: 10px; }
+    .window .resize.w-resize {
+      left: 0;
+      top: 30px;
+      cursor: ew-resize;
+      width: 10px; }
+
+.settings {
+  padding: 20px; }
+
+.transition-enter {
+  opacity: 0;
+  -webkit-transition: opacity 1s ease-in;
+          transition: opacity 1s ease-in; }
+
+.transition-enter.transition-enter-active {
+  opacity: 1; }
+
+.transition-leave {
+  opacity: 1;
+  -webkit-transition: opacity 1s ease-in;
+          transition: opacity 1s ease-in; }
+
+.transition-leave.transition-leave-active {
+  opacity: 0; }
