@@ -1,3 +1,5 @@
+'use strict';
+
 var _ = require('lodash');
 var $ = require('jquery');
 var React = require('react');
@@ -42,13 +44,11 @@ var Manager = React.createClass({
   render: function () {
 
     var windows = this.props.manager.openWindows().map(function (window) {
-      /* jshint ignore: start */
-      return <Window
-        key={window.id}
-        offset={this.state.offset}
-        window={window}
-      />;
-      /* jshint ignore: end */
+      return new Window({
+        key: window.id,
+        offset: this.state.offset,
+        window: window,
+      });
     }, this);
 
     return (
