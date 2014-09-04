@@ -67,9 +67,9 @@ var Window = React.createClass({
   handleMove: function (e) {
     e.preventDefault();
     this.focus();
-    this.refs.content.getDOMNode().children[0].focus();
     var mouse = this.convertPoints(e);
     this.window.startMove(mouse.x, mouse.y);
+    this.refs.content.getDOMNode().children[0].focus();
   },
 
   handleMouseMove: function (e) {

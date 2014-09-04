@@ -18,7 +18,6 @@ var Settings = React.createClass({
     });
   },
   handleFocus: function () {
-    console.log('focus');
     this.refs.name.getDOMNode().focus();
   },
   render: function () {
