@@ -1,3 +1,5 @@
+'use strict';
+
 var $ = require('jquery');
 var _ = require('lodash');
 var React = require('react');
@@ -15,9 +17,13 @@ var Settings = React.createClass({
       name: this.refs.name.getDOMNode().value
     });
   },
+  handleFocus: function () {
+    console.log('focus');
+    this.refs.name.getDOMNode().focus();
+  },
   render: function () {
     return (
-      <div className='settings'>
+      <div tabIndex='-1' className='settings' onFocus={this.handleFocus}>
         <label>Name:</label>
         <input ref='name' type='text' defaultValue={this.state.name} />
         <button onClick={this.save}>Save</button>

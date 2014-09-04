@@ -65,13 +65,15 @@ var Window = React.createClass({
   },
 
   handleMove: function (e) {
+    e.preventDefault();
     this.focus();
+    this.refs.content.getDOMNode().children[0].focus();
     var mouse = this.convertPoints(e);
     this.window.startMove(mouse.x, mouse.y);
   },
 
   handleMouseMove: function (e) {
-    if (this.window.mode == INACTIVE) return true;
+    if (this.window.mode === INACTIVE) { return true; }
     var mouse = this.convertPoints(e);
     this.window.update(mouse.x, mouse.y);
     this.quickUpdate();
@@ -118,7 +120,7 @@ var Window = React.createClass({
           <div className='title'>{this.window.title}</div>
           <div className='close' onMouseDown={this.preventDefault} onClick={this.close} />
         </header>
-        <div className='content' onMouseDown={this.handlePropagation}>
+        <div className='content' onMouseDown={this.handlePropagation} ref='content'>
           {this.window.component}
         </div>
         <div className='resize s-resize' onMouseDown={this.handleResize} />
