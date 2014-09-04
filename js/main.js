@@ -1,5 +1,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"./example/app.jsx":[function(require,module,exports){
-/** @jsx React.DOM */var $ = require('jquery');
+/** @jsx React.DOM */'use strict';
+
+var $ = require('jquery');
 var _ = require('lodash');
 var React = require('react');
 var ReactWM = require('../lib/');
@@ -16,9 +18,12 @@ var Settings = React.createClass({displayName: 'Settings',
       name: this.refs.name.getDOMNode().value
     });
   },
+  handleFocus: function () {
+    this.refs.name.getDOMNode().focus();
+  },
   render: function () {
     return (
-      React.DOM.div({className: "settings"}, 
+      React.DOM.div({tabIndex: "-1", className: "settings", onFocus: this.handleFocus}, 
         React.DOM.label(null, "Name:"), 
         React.DOM.input({ref: "name", type: "text", defaultValue: this.state.name}), 
         React.DOM.button({onClick: this.save}, "Save"), 
@@ -100,11 +105,13 @@ var _ = require('lodash');
 var signals = require('signals');
 var Window = require('./window');
 
+var INITIAL_INDEX = 1;
+
 var Manager = function (windows) {
   signals.convert(this);
 
   this._windows = {};
-  this._index = 1;
+  this._index = INITIAL_INDEX;
   this._active = false;
 
   if (_.isArray(windows)) {
@@ -137,14 +144,14 @@ _.extend(Manager.prototype, {
     return this._windows.hasOwnProperty(id);
   },
 
-  
+
   /**
    * add a window
    * - window (Window|object)
    */
 
   add: function (window) {
-    if (!(window instanceof Window)) window = new Window(window);
+    if (!(window instanceof Window)) { window = new Window(window); }
     window.manager = this;
 
     this._windows[window.id] = window;
@@ -195,7 +202,7 @@ _.extend(Manager.prototype, {
    */
 
   open: function (id, component, defaults) {
-    if (! defaults) defaults = {};
+    if (! defaults) { defaults = {}; }
     defaults.id = id;
 
     var window = this.has(id) ? this.get(id) : this.add(defaults);
@@ -206,7 +213,7 @@ _.extend(Manager.prototype, {
     return window;
   },
 
-  
+
   /**
    * count how many windows are open
    * > int
@@ -228,12 +235,14 @@ _.extend(Manager.prototype, {
     if (! window) {
       throw new Error('Can not focus on a window it cannot find: ' + id);
     } else if (window === this._active) {
-      // already at the end of the stack
+      // this window already has focus
       return;
     }
 
-    window.setIndex(this._index++);
+    window.setIndex(this._index);
+    this._index += 1;
     this._active = window;
+    this.emit('change');
   },
 
   /**
@@ -293,9 +302,10 @@ _.extend(Manager.prototype, {
    */
 
   _resetIndex: function () {
-    this._index = 1;
+    this._index = INITIAL_INDEX;
     _.sortBy(this.allWindows(), 'index').forEach(function (window) {
-      window.setIndex(this._index++);
+      window.setIndex(this._index);
+      this._index += 1;
       this._active = window;
     }, this);
   }
@@ -321,8 +331,8 @@ var Window = function (props) {
   this.mode = INACTIVE;
 
   // JSON converts Infinity to null
-  if (this.maxWidth === null) this.maxWidth = Infinity;
-  if (this.maxHeight === null) this.maxHeight = Infinity;
+  if (this.maxWidth === null) { this.maxWidth = Infinity; }
+  if (this.maxHeight === null) { this.maxHeight = Infinity; }
 
   if (this.id === undefined) {
     throw new Error('All windows must have an id');
@@ -431,8 +441,8 @@ _.extend(Window.prototype, {
    */
 
   update: function (x, y) {
-    if (this.mode === MOVE) return this._move(x, y);
-    if (this.mode === RESIZE) return this._resize(x, y);
+    if (this.mode === MOVE) { return this._move(x, y); }
+    if (this.mode === RESIZE) { return this._resize(x, y); }
   },
 
 
@@ -441,7 +451,7 @@ _.extend(Window.prototype, {
    */
 
   endChange: function () {
-    if (this.mode === INACTIVE) return;
+    if (this.mode === INACTIVE) { return; }
     this.mode = INACTIVE;
 
     if (this.mode === MOVE) {
@@ -470,7 +480,7 @@ _.extend(Window.prototype, {
    */
 
   open: function () {
-    if (this.isOpen) return;
+    if (this.isOpen) { return; }
     this.isOpen = true;
     this.emit('change:open');
     this.emit('change');
@@ -482,7 +492,7 @@ _.extend(Window.prototype, {
    */
 
   close: function () {
-    if (! this.isOpen) return;
+    if (! this.isOpen) { return; }
     this.isOpen = false;
     this.emit('change:open');
     this.emit('change');
@@ -506,7 +516,7 @@ _.extend(Window.prototype, {
    */
 
   isFocused: function () {
-    if (! this.manager) return false;
+    if (! this.manager) { return false; }
     return this.manager.active() === this;
   },
 
@@ -587,18 +597,18 @@ _.extend(Window.prototype, {
 
     if (finalWidth > this.maxWidth ) {
       deltaX = this.maxWidth - this._startWidth;
-      if (this._quad.left) deltaX *= -1;
+      if (this._quad.left) { deltaX *= -1; }
     } else if (finalWidth < this.minWidth) {
       deltaX = this.minWidth - this._startWidth;
-      if (this._quad.left) deltaX *= -1;
+      if (this._quad.left) { deltaX *= -1; }
     }
 
     if (finalHeight > this.maxHeight) {
       deltaY = this.maxHeight - this._startHeight;
-      if (this._quad.top) deltaY *= -1;
+      if (this._quad.top) { deltaY *= -1; }
     } else if (finalHeight < this.minHeight) {
       deltaY = this.minHeight - this._startHeight;
-      if (this._quad.top) deltaY *= -1;
+      if (this._quad.top) { deltaY *= -1; }
     }
 
     if (this._quad.left) {
@@ -770,13 +780,15 @@ var Window = React.createClass({displayName: 'Window',
   },
 
   handleMove: function (e) {
+    e.preventDefault();
     this.focus();
     var mouse = this.convertPoints(e);
     this.window.startMove(mouse.x, mouse.y);
+    this.refs.content.getDOMNode().children[0].focus();
   },
 
   handleMouseMove: function (e) {
-    if (this.window.mode == INACTIVE) return true;
+    if (this.window.mode === INACTIVE) { return true; }
     var mouse = this.convertPoints(e);
     this.window.update(mouse.x, mouse.y);
     this.quickUpdate();
@@ -823,7 +835,7 @@ var Window = React.createClass({displayName: 'Window',
           React.DOM.div({className: "title"}, this.window.title), 
           React.DOM.div({className: "close", onMouseDown: this.preventDefault, onClick: this.close})
         ), 
-        React.DOM.div({className: "content", onMouseDown: this.handlePropagation}, 
+        React.DOM.div({className: "content", onMouseDown: this.handlePropagation, ref: "content"}, 
           this.window.component
         ), 
         React.DOM.div({className: "resize s-resize", onMouseDown: this.handleResize}), 
