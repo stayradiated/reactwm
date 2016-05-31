@@ -1,5 +1,6 @@
 var gulp = require('gulp');
-var react = require('gulp-react');
+var sourcemaps = require('gulp-sourcemaps');
+var babel = require('gulp-babel');
 var sass = require('gulp-sass');
 var source = require('vinyl-source-stream');
 var connect = require('gulp-connect');
@@ -8,12 +9,16 @@ var watchify = require('watchify');
 var browserify = require('browserify');
 var autoprefixer = require('gulp-autoprefixer');
 
-gulp.task('default', ['package']); 
+gulp.task('default', ['package']);
 
 gulp.task('package', function () {
   return gulp.src('lib/**/*.js*')
-  .pipe(react())
-  .pipe(gulp.dest('pkg'));
+    .pipe(sourcemaps.init())
+    .pipe(babel({
+      presets: ['es2015']
+    }))
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('pkg'));
 });
 
 gulp.task('watch', ['default'], function () {

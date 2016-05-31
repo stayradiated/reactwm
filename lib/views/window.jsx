@@ -1,15 +1,12 @@
 'use strict';
 
-var _ = require('lodash');
-var $ = require('jquery');
 var React = require('react');
-var classSet = require('react/addons').addons.classSet;
+var ReactDOM = require('react-dom');
+var classSet = require('react-classset');
 
 var WindowModel = require('../models/window');
 
 var INACTIVE = 0;
-var MOVE     = 1;
-var RESIZE   = 2;
 
 var Window = React.createClass({
 
@@ -37,7 +34,7 @@ var Window = React.createClass({
   quickUpdate: function () {
     var self = this;
     requestAnimationFrame(function () {
-      var el = self.getDOMNode();
+      var el = ReactDOM.findDOMNode(self);
       el.style.width  = self.window.width + 'px';
       el.style.height = self.window.height + 'px';
       el.style.top    = self.window.y + 'px';
@@ -69,7 +66,7 @@ var Window = React.createClass({
     this.focus();
     var mouse = this.convertPoints(e);
     this.window.startMove(mouse.x, mouse.y);
-    this.refs.content.getDOMNode().children[0].focus();
+    ReactDOM.findDOMNode(this.refs.content).children[0].focus();
   },
 
   handleMouseMove: function (e) {

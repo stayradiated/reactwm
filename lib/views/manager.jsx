@@ -1,9 +1,8 @@
 'use strict';
 
-var _ = require('lodash');
 var $ = require('jquery');
 var React = require('react');
-var CSSTransitionGroup = require('react/addons').addons.CSSTransitionGroup;
+var ReactDOM = require('react-dom');
 
 var WindowModel = require('../models/window');
 var ManagerModel = require('../models/manager');
@@ -24,7 +23,7 @@ var Manager = React.createClass({
     this.manager = this.props.manager;
     this.manager.on('change', this.forceUpdate, this);
 
-    var el = $(this.getDOMNode());
+    var el = $(ReactDOM.findDOMNode(this));
     this.setState({ offset: el.offset() });
   },
 
@@ -43,13 +42,9 @@ var Manager = React.createClass({
 
   render: function () {
 
-    var windows = this.props.manager.openWindows().map(function (window) {
-      return new Window({
-        key: window.id,
-        offset: this.state.offset,
-        window: window,
-      });
-    }, this);
+    var windows = this.props.manager.openWindows().map( window =>
+      <Window key={window.id} offset={this.state.offset} window={window} />,
+      this);
 
     return (
       /* jshint ignore: start */

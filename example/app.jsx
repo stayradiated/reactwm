@@ -3,6 +3,7 @@
 var $ = require('jquery');
 var _ = require('lodash');
 var React = require('react');
+var ReactDOM = require('react-dom');
 var ReactWM = require('../lib/');
 
 
@@ -14,11 +15,11 @@ var Settings = React.createClass({
   },
   save: function () {
     this.setState({
-      name: this.refs.name.getDOMNode().value
+      name: ReactDOM.findDOMNode(this.refs.name).value
     });
   },
   handleFocus: function () {
-    this.refs.name.getDOMNode().focus();
+    ReactDOM.findDOMNode(this.refs.name).focus();
   },
   render: function () {
     return (
@@ -52,7 +53,7 @@ $(function () {
   manager.on('change', save);
   manager.on('change:windows', save);
 
-  React.renderComponent((
+  ReactDOM.render((
     <ReactWM manager={manager} />
   ), $('.content')[0]);
 
